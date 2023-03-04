@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">RSS Reader</string>
-    <string name="hello_message">hello world</string>
+    <string name="main_activity">Main activity</string>
+    <string name="feed_activity_text">Feed activity</string>
+    <string name="add_rss_activity">Add RSS activity</string>
+    <string name="feed_item_activity">Feed item activity</string>
+    <string name="go_feed">Go Feed</string>
+    <string name="add_rss">Add RSS</string>
+    <string name="open_item">Open item</string>
 </resources>
