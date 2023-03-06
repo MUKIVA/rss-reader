@@ -3,15 +3,15 @@ package com.mukiva.rssreader
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.mukiva.rssreader.databinding.ActivityFeedBinding
+import com.mukiva.rssreader.databinding.ActivityFeedMainBinding
 
-class FeedActivity : AppCompatActivity() {
+class FeedActivityMain : AppCompatActivity() {
 
-    private lateinit var binding: ActivityFeedBinding
+    private lateinit var binding: ActivityFeedMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityFeedBinding.inflate(layoutInflater)
+        binding = ActivityFeedMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.addRssButton.setOnClickListener {

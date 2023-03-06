@@ -14,20 +14,16 @@
         <activity
             android:name=".FeedItemActivity"
             android:label="Feed item"
-            android:parentActivityName=".FeedActivity"
+            android:parentActivityName=".FeedActivityMain"
             android:exported="false" />
         <activity
             android:name=".AddRssActivity"
             android:label="Add RSS"
-            android:parentActivityName=".FeedActivity"
+            android:parentActivityName=".FeedActivityMain"
             android:exported="false" />
         <activity
-            android:name=".FeedActivity"
+            android:name=".FeedActivityMain"
             android:label="RSS Feed"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:label="Add first RSS"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
