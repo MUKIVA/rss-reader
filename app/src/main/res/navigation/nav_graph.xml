@@ -3,17 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/addFirstRssFragment">
+    app:startDestination="@id/feedFragment">
 
-    <fragment
-        android:id="@+id/addFirstRssFragment"
-        android:name="com.mukiva.rssreader.AddFirstRssFragment"
-        android:label="First RSS"
-        tools:layout="@layout/fragment_add_first_rss" >
-        <action
-            android:id="@+id/action_addFirstRssFragment_to_feedFragment"
-            app:destination="@id/feedFragment" />
-    </fragment>
     <fragment
         android:id="@+id/feedFragment"
         android:name="com.mukiva.rssreader.FeedFragment"
@@ -26,11 +17,15 @@
             android:id="@+id/action_feedFragment_to_feedItemFragment"
             app:destination="@id/feedItemFragment" />
     </fragment>
+
+
     <fragment
         android:id="@+id/addRssFragment"
         android:name="com.mukiva.rssreader.AddRssFragment"
         android:label="Add RSS"
         tools:layout="@layout/fragment_add_rss" />
+
+
     <fragment
         android:id="@+id/feedItemFragment"
         android:name="com.mukiva.rssreader.FeedItemFragment"
