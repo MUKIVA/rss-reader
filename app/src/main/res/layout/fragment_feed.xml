@@ -6,25 +6,36 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".FeedFragment">
+    tools:context=".screens.FeedFragment">
 
     <TextView
+        android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/feed_fragment" />
+        android:text="@string/feed_fragment"
+        />
 
     <Button
         android:id="@+id/go_add_rss"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:text="@string/add_rss" />
+        android:text="@string/add_rss"
+        />
 
     <Button
         android:id="@+id/go_feed_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:text="@string/open_feed_item" />
+        android:text="@string/open_feed_item"
+        />
+
+    <Button
+        android:id="@+id/update_text_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="@string/update_text"/>
 
 </LinearLayout>

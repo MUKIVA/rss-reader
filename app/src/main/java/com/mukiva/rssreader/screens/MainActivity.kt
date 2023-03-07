@@ -1,4 +1,4 @@
-package com.mukiva.rssreader
+package com.mukiva.rssreader.screens
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.mukiva.rssreader.R
 import com.mukiva.rssreader.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

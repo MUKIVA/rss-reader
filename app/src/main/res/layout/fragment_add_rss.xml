@@ -6,9 +6,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".AddRssFragment">
+    tools:context=".screens.AddRssFragment">
 
     <TextView
+        android:id="@+id/content_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_rss_fragment" />

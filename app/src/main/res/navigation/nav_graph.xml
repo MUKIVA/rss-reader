@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/feedFragment"
-        android:name="com.mukiva.rssreader.FeedFragment"
+        android:name="com.mukiva.rssreader.screens.FeedFragment"
         android:label="Feed"
         tools:layout="@layout/fragment_feed" >
         <action
@@ -21,14 +21,14 @@
 
     <fragment
         android:id="@+id/addRssFragment"
-        android:name="com.mukiva.rssreader.AddRssFragment"
+        android:name="com.mukiva.rssreader.screens.AddRssFragment"
         android:label="Add RSS"
         tools:layout="@layout/fragment_add_rss" />
 
 
     <fragment
         android:id="@+id/feedItemFragment"
-        android:name="com.mukiva.rssreader.FeedItemFragment"
+        android:name="com.mukiva.rssreader.screens.FeedItemFragment"
         android:label="Feed Item"
         tools:layout="@layout/fragment_feed_item" />
 </navigation>
