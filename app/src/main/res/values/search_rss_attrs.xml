@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <declare-styleable name="SearchRssView">
+        <attr name="field_hint" format="string" />
+        <attr name="field_isProgress" format="boolean" />
+    </declare-styleable>
+    
+</resources>

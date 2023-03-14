@@ -1,23 +1,30 @@
 <resources>
     <string name="app_name">RSS Reader</string>
-    <string name="hello_message">hello world</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="add_first_rss_fragment">Add first RSS fragment</string>
-    <string name="go_feed">Go feed</string>
-    <string name="feed_fragment">Feed fragment</string>
-    <string name="add_rss">Add RSS</string>
-    <string name="open_feed_item">Open feed item</string>
-    <string name="add_rss_fragment">Add RSS fragment</string>
-    <string name="feed_item_fragment">Feed item fragment</string>
-    <string name="title_activity_main2">MainActivity2</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
+    <string name="add_rss_button_text">Добавить</string>
+    <string name="mock_description">Description</string>
+    <string name="loading_text">Пожалуйста, подождите...</string>
+    <string name="update">Обновить</string>
+    <string name="details_mock_title">Гейб Ньюэлл: Мы много раз брались за Half-Life 3 и всегда заходили в тупик</string>
+    <string name="mock_date">10 декабря 2023</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="update_text">Update text</string>
+
+    <string name="details_mock_content">
+        По словам Ньюэлла, Valve «не станет выпускать что-то, лишь бы выпустить что-то». Но для Half-Life благодаря «Аликс» сейчас достаточно светлое будущее: команда проекта мотивирована желанием сделать новую Half-Life.
+
+        Сейчас, правда, этому мешает глобальная пандемия. По прикидкам главы Valve, продуктивность команды в дистанционном производстве упала на 50-75%, из-за чего Ньюэлл всерьёз обдумывает возможность как минимум временно перевести сотрудников в Новую Зеландию.
+
+        Ньюэлл находится в стране с самого начала пандемии и уже получил там гражданство, а теперь занимается благотворительностью. Он безмерно благодарен населению страны за такой тёплый приём. В ближайшее время глава Valve намерен встретиться с вице-президентом Новой Зеландии для обсуждения открытия офиса студии в стране.
+    </string>
+
+
+    <string name="details_open_original">Открыть оригинал</string>
+    <string name="add_first_rss_text">У вас еще нет RSS лент\nВставьте ссылку, чтобы добавить</string>
+    <string name="search_rss_hint">Введите URL</string>
+    <string name="search_error_parse">Проверьте, что указанная ссылка является RSS-лентой</string>
+    <string name="search_error_network">Ошибка соединения с интернетом</string>
+    <string name="mock_title">Title</string>
+    <string name="empty_rss_feed">В ленте еще нет новостей</string>
+    <string name="fail_get_data_text">При получении данных возникла ошибка</string>
+    <string name="repeat">Повторить</string>
+
 </resources>

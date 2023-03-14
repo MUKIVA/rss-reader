@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingHorizontal="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_first_rss_text"
+        android:textAlignment="center" />
+
+    <com.mukiva.rssreader.components.SearchRssView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/bg_search_input_field"
+        android:paddingStart="18dp"
+        android:paddingEnd="8dp"
+        app:field_isProgress="false"
+        app:field_hint="@string/search_rss_hint"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/search_error_parse"
+        android:textColor="#FF0000"
+        android:visibility="gone"/>
+
+    <com.mukiva.rssreader.components.RssItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:titleText="@string/mock_title"
+        app:descriptionText="@string/mock_description"
+        android:visibility="gone"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_rss_button_text"
+        android:visibility="gone"/>
+
+</LinearLayout>
