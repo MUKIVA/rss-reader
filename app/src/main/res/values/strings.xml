@@ -2,7 +2,7 @@
     <string name="app_name">RSS Reader</string>
     <string name="add_rss_button_text">Добавить</string>
     <string name="mock_description">Description</string>
-    <string name="loading_text">Пожалуйста, подождите...</string>
+    <string name="loading_text">Пожалуйста, подождите…</string>
     <string name="update">Обновить</string>
     <string name="details_mock_title">Гейб Ньюэлл: Мы много раз брались за Half-Life 3 и всегда заходили в тупик</string>
     <string name="mock_date">10 декабря 2023</string>
@@ -26,5 +26,9 @@
     <string name="empty_rss_feed">В ленте еще нет новостей</string>
     <string name="fail_get_data_text">При получении данных возникла ошибка</string>
     <string name="repeat">Повторить</string>
+    <string name="share">Share</string>
+    <string name="menu_about_feed">Информация о ленте</string>
+    <string name="menu_add_feed">Добавить ленту</string>
+    <string name="menu_delete_feed">Удалить ленту</string>
 
 </resources>

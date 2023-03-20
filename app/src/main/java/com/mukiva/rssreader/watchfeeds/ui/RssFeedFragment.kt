@@ -18,7 +18,6 @@ class RssFeedFragment : Fragment(R.layout.fragment_rss_feed) {
 
     private lateinit var _binding: FragmentRssFeedBinding
     private lateinit var _adapter: RssFeedItemsAdapter
-
     private val _viewModel: RssFeedViewModel by viewModels { factory() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -23,7 +23,7 @@ class WatchFeedsViewModel : ViewModel() {
 
     init {
         _state.value = FeedState(
-            stateType = FeedStateType.NORMAL,
+            stateType = FeedStateType.EMPTY,
             feeds = (1..10).map {
                 RssItem(
                     rssTitle = "Title $it"

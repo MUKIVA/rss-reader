@@ -1,6 +1,7 @@
 package com.mukiva.rssreader.watchfeeds.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -17,13 +18,28 @@ import com.mukiva.rssreader.watchfeeds.presentation.FeedState
 import com.mukiva.rssreader.watchfeeds.presentation.FeedStateType
 import com.mukiva.rssreader.watchfeeds.presentation.WatchFeedsViewModel
 
-class FeedMenuProvider : MenuProvider {
+class WatchFeedsMenuProvider : MenuProvider {
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.feed_menu, menu)
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        return true
+        when (menuItem.itemId)
+        {
+            R.id.about_feed -> {
+                Log.d("MENU", "about_feed")
+                return true
+            }
+            R.id.add_feed -> {
+                Log.d("MENU", "add_feed")
+                return true
+            }
+            R.id.delete_feed -> {
+                Log.d("MENU", "delete_feed")
+                return true
+            }
+        }
+        return false
     }
 }
 
@@ -32,15 +48,13 @@ class WatchFeedsFragment : Fragment(R.layout.fragment_watch_feeds) {
     private lateinit var _binding: FragmentWatchFeedsBinding
     private lateinit var _viewModel: WatchFeedsViewModel
     private lateinit var _adapter: RssFeedFragmentAdapter
-    private val _menuProvider = FeedMenuProvider()
+    private val _menuProvider = WatchFeedsMenuProvider()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initFields(view)
         observeViewModel()
         initPager()
-
-//        initMenu()
     }
 
     private fun initFields(view: View) {
@@ -64,16 +78,19 @@ class WatchFeedsFragment : Fragment(R.layout.fragment_watch_feeds) {
     }
 
     private fun renderLoadingState() {
+        hideMenu()
         _binding.feedLoading.root.visibility = View.VISIBLE
     }
 
     private fun renderNormalState() {
+        initMenu()
         _binding.feedLoading.root.visibility = View.GONE
         _binding.feedEmpty.root.visibility = View.GONE
         _adapter.fragments = _viewModel.state.value?.feeds ?: emptyList()
     }
 
     private fun renderEmptyState() {
+        hideMenu()
         _binding.feedLoading.root.visibility = View.GONE
         _binding.feedEmpty.root.visibility = View.VISIBLE
     }
@@ -88,5 +105,9 @@ class WatchFeedsFragment : Fragment(R.layout.fragment_watch_feeds) {
     private fun initMenu() {
         (requireActivity() as MenuHost)
             .addMenuProvider(_menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun hideMenu() {
+        (requireActivity() as MenuHost).removeMenuProvider(_menuProvider)
     }
 }

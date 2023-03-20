@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:title="Информация о ленте"/>
+    <item
+        android:id="@+id/about_feed"
+        android:title="@string/menu_about_feed"
+        app:showAsAction="never"/>
 
-    <item android:title="Добавить ленту"/>
+    <item
+        android:id="@+id/add_feed"
+        android:title="@string/menu_add_feed"
+        app:showAsAction="never"/>
 
-    <item android:title="Удалить ленту"/>
+    <item
+        android:id="@+id/delete_feed"
+        android:title="@string/menu_delete_feed"
+        app:showAsAction="never"/>
 
 </menu>

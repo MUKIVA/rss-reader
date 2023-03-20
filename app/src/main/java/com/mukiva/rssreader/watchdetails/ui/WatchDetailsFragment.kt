@@ -1,6 +1,7 @@
 package com.mukiva.rssreader.watchdetails.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -22,7 +23,14 @@ class WatchDetailsMenuProvider : MenuProvider {
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        return true
+        when (menuItem.itemId)
+        {
+            R.id.share_option -> {
+                Log.d("MENU", "SHARE")
+                return true
+            }
+        }
+        return false
     }
 }
 
@@ -38,7 +46,7 @@ class WatchDetailsFragment : Fragment(R.layout.fragment_watch_details) {
         initFields(view)
         observeViewModel()
 
-//        initMenu()
+        initMenu()
     }
 
     private fun initFields(view: View) {

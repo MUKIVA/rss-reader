@@ -4,7 +4,8 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:title="Share"
+            android:id="@+id/share_option"
+            android:title="@string/share"
             android:icon="@drawable/ic_share"
             app:showAsAction="ifRoom" />
 
