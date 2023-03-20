@@ -30,5 +30,6 @@
     <string name="menu_about_feed">Информация о ленте</string>
     <string name="menu_add_feed">Добавить ленту</string>
     <string name="menu_delete_feed">Удалить ленту</string>
+    <string name="max_feeds_count_msg">Добавлено максимальное кол-вол лент</string>
 
 </resources>
