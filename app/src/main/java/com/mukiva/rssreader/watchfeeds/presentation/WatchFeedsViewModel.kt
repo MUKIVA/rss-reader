@@ -5,7 +5,9 @@ import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.mukiva.rssreader.R
+import com.mukiva.rssreader.components.FeedInfoBottomSheetDialog
 import com.mukiva.rssreader.watchfeeds.domain.RssItem
 
 enum class FeedStateType {
@@ -30,7 +32,9 @@ class WatchFeedsViewModel : ViewModel() {
             stateType = FeedStateType.NORMAL,
             feeds = (1..10).map {
                 RssItem(
-                    rssTitle = "Title $it"
+                    rssTitle = "Title $it",
+                    rssDescription = "Desc $it",
+                    rssLink = "https:/google.com"
                 ) }.toMutableList()
         )
     }
@@ -53,8 +57,14 @@ class WatchFeedsViewModel : ViewModel() {
         nav.navigate(R.id.action_watchFeedsFragment_to_addRssFragment)
     }
 
-    fun showDetailsRssFeed(index: Int) {
-
+    fun showDetailsRssFeed(index: Int, ctx: Context) {
+        val dialog = BottomSheetDialog(ctx)
+        val view = FeedInfoBottomSheetDialog(ctx)
+        val rssItem = _state.value?.feeds?.get(index)
+        view.setTitle(rssItem?.rssTitle ?: "Undefined")
+        view.setDescription(rssItem?.rssDescription ?: "Undefined")
+        dialog.setContentView(view)
+        dialog.show()
     }
 
     fun refreshRssFeed(index: Int) {

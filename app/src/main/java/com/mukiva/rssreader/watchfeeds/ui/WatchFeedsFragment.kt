@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.databinding.FragmentWatchFeedsBinding
@@ -127,11 +128,12 @@ class WatchFeedsFragment : Fragment(R.layout.fragment_watch_feeds) {
 
     private fun addRssFeed() : Boolean {
         _viewModel.addRssFeed(findNavController(), requireContext())
+
         return true
     }
 
     private fun aboutFeed() : Boolean {
-        _viewModel.showDetailsRssFeed(_binding.tabLayout.selectedTabPosition)
+        _viewModel.showDetailsRssFeed(_binding.tabLayout.selectedTabPosition, requireContext())
         return true
     }
 }

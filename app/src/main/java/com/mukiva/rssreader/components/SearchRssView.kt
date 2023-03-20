@@ -7,18 +7,15 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.databinding.ViewSearchRssBinding
 
-class SearchRssView(
+class SearchRssView
+@JvmOverloads constructor (
     context: Context,
-    attrs: AttributeSet?,
-    defStyleAttr: Int,
-    defStyleRes: Int
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+    defStyleRes: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr, defStyleRes) {
 
     private var _binding: ViewSearchRssBinding
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context) : this(context, null)
 
     init {
         val inflater = LayoutInflater.from(context)

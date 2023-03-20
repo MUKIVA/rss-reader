@@ -31,18 +31,13 @@
         layout="@layout/fragment_watch_feeds_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"/>
+        tools:visibility="gone"/>
 
     <include
         android:id="@+id/feed_empty"
         layout="@layout/fragment_watch_feeds_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" />
-
-    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
