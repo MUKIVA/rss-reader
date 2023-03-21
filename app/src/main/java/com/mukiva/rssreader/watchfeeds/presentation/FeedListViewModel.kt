@@ -60,7 +60,7 @@ class FeedListViewModel(
         _eventChanel.send(FeedEvents.ShowFeedDetails(_state.value!!.feeds[index]))
     }
 
-    fun deleteFeed(index: Int) {
+    fun deleteFeed(index: Int) = viewModelScope.launch {
         _feedsService.deleteFeed(index)
         _state.value = FeedState(
             stateType = FeedStateType.NORMAL,

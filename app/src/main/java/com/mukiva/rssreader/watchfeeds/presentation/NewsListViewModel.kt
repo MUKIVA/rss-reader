@@ -28,12 +28,12 @@ class NewsListViewModel(
 
     init {
         _state.value = NewsListState(
-            stateType = NewsListStateType.EMPTY,
+            stateType = NewsListStateType.LOADING,
             news = emptyList()
         )
     }
 
-    fun loadData(index: Int) {
+    fun loadData(index: Int) = viewModelScope.launch {
         val news = _feedsService.getNewsByIndex(index)
         _state.value = NewsListState(
             stateType = getStateType(news),

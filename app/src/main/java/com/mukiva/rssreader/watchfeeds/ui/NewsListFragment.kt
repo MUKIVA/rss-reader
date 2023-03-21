@@ -1,10 +1,12 @@
 package com.mukiva.rssreader.watchfeeds.ui
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mukiva.rssreader.R
@@ -15,23 +17,32 @@ import com.mukiva.rssreader.watchfeeds.presentation.NewsListState
 import com.mukiva.rssreader.watchfeeds.presentation.NewsListViewModel
 import com.mukiva.rssreader.watchfeeds.presentation.NewsListStateType
 
-class NewsListFragment(
-    private val _position: Int
-) : Fragment(R.layout.fragment_news_list) {
+class NewsListFragment : Fragment(R.layout.fragment_news_list) {
 
     private lateinit var _binding: FragmentNewsListBinding
     private lateinit var _adapter: NewsListItemAdapter
     private val _viewModel: NewsListViewModel by viewModels { factory() }
+    private var _position: Int = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initFields(view)
         initRecyclerView()
-        initRefreshLayouts()
         initActions()
+        initRefreshLayouts()
         observeViewModel()
-        _viewModel.loadData(_position)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        lifecycleScope.launchWhenResumed {
+            _viewModel.loadData(_position)
+        }
+    }
+
+    fun setPosition(position: Int) {
+        _position = position
     }
 
     private fun refresh() {
@@ -44,7 +55,7 @@ class NewsListFragment(
 
     private fun initRefreshLayouts() {
         _binding.refreshLayout.setOnRefreshListener {
-            _viewModel.refresh(_position)
+            refresh()
         }
     }
 
@@ -108,6 +119,7 @@ class NewsListFragment(
 
             feedListEmptyProgress.isVisible = true
         }
+        _binding.recyclerView.isVisible = false
         _binding.emptyView.root.isVisible = true
     }
 
@@ -115,6 +127,7 @@ class NewsListFragment(
         _binding.emptyView.root.isVisible = false
         _adapter.items = state.news
         _binding.refreshLayout.isRefreshing = false
+        _binding.recyclerView.isVisible = true
     }
 
     private fun renderFailState() {
@@ -132,5 +145,6 @@ class NewsListFragment(
         }
         _binding.emptyView.root.isVisible = true
         _binding.refreshLayout.isRefreshing = false
+        _binding.recyclerView.isVisible = false
     }
 }
