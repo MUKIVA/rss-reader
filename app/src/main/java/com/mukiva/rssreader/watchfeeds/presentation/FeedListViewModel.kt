@@ -39,9 +39,10 @@ class FeedListViewModel(
 
     init {
         _state.value = FeedState(
-            stateType = FeedStateType.NORMAL,
-            feeds = _feedsService.getAllFeeds()
+            stateType = FeedStateType.LOADING,
+            feeds = mutableListOf()
         )
+        loadFeeds()
     }
 
     fun triggerDeleteFeed(index: Int) = viewModelScope.launch {
@@ -61,10 +62,24 @@ class FeedListViewModel(
     }
 
     fun deleteFeed(index: Int) = viewModelScope.launch {
-        _feedsService.deleteFeed(index)
+        _state.value = _state.value!!.copy(stateType = FeedStateType.LOADING)
+        val feeds = _feedsService.deleteFeed(index)
         _state.value = FeedState(
-            stateType = FeedStateType.NORMAL,
-            feeds = _feedsService.getAllFeeds()
+            stateType = getFeedStateType(feeds),
+            feeds = feeds
         )
+    }
+
+    fun loadFeeds() = viewModelScope.launch {
+        _state.value = _state.value!!.copy(stateType = FeedStateType.LOADING)
+        val feeds = _feedsService.getAllFeeds()
+        _state.value = FeedState(
+            stateType = getFeedStateType(feeds),
+            feeds = feeds
+        )
+    }
+
+    private fun getFeedStateType(feeds: MutableList<Feed>): FeedStateType {
+        return if (feeds.isEmpty()) FeedStateType.EMPTY else FeedStateType.NORMAL
     }
 }

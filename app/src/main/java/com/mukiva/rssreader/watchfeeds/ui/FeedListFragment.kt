@@ -21,6 +21,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mukiva.rssreader.R
+import com.mukiva.rssreader.addrss.ui.AddRssFragment
 import com.mukiva.rssreader.databinding.FragmentWatchFeedsBinding
 import com.mukiva.rssreader.watchfeeds.di.factory
 import com.mukiva.rssreader.watchfeeds.domain.Feed
@@ -69,6 +70,18 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         initPager()
     }
 
+    override fun onResume() {
+        super.onResume()
+        initActions()
+    }
+
+    private fun initActions() {
+        with (_binding.feedEmpty.addRssFeed.getFragment<AddRssFragment>()) {
+            setBtnListener {
+                getViewModel().addRss()
+                _viewModel.loadFeeds()
+        } }
+    }
 
     private fun initFields(view: View) {
         _binding = FragmentWatchFeedsBinding.bind(view)
@@ -102,12 +115,17 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
     private fun renderLoadingState() {
         hideMenu()
         _binding.feedLoading.root.isVisible = true
+        _binding.feedEmpty.root.isVisible = false
+        _binding.tabLayout.isVisible = false
+        _binding.feedViewPager.isVisible = false
     }
 
     private fun renderNormalState() {
         initMenu()
         _binding.feedLoading.root.isVisible = false
         _binding.feedEmpty.root.isVisible = false
+        _binding.feedViewPager.isVisible = true
+        _binding.tabLayout.isVisible = true
         _adapter.fragments = _viewModel.state.value?.feeds ?: emptyList()
     }
 

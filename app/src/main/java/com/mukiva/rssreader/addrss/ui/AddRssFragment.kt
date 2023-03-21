@@ -2,6 +2,7 @@ package com.mukiva.rssreader.addrss.ui
 
 import android.os.Bundle
 import android.view.View
+import android.view.View.OnClickListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -21,6 +22,12 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
         initFields(view)
         observeViewModel()
         initActions()
+    }
+
+    fun getViewModel(): AddRssViewModel = _viewModel
+
+    fun setBtnListener(onClickListener: OnClickListener) {
+        _binding.searchField.setBtnListener(onClickListener)
     }
 
     private fun initActions() {

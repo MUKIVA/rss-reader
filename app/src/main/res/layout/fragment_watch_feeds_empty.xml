@@ -3,10 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:gravity="center"
-    android:paddingHorizontal="16dp">
+    android:gravity="center">
 
     <TextView
         android:layout_width="wrap_content"
@@ -14,25 +12,10 @@
         android:text="@string/add_first_rss_text"
         android:textAlignment="center" />
 
-    <com.mukiva.rssreader.addrss.ui.SearchRssView
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/add_rss_feed"
+        android:name="com.mukiva.rssreader.addrss.ui.AddRssFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        app:field_isProgress="false"
-        app:field_hint="@string/search_rss_hint"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/search_error_parse"
-        android:textColor="#FF0000"
-        android:visibility="gone"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_rss_button_text"
-        android:visibility="gone"/>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

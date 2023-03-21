@@ -17,6 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/nav_graph"
-        android:backgroundTint="@color/design_default_color_background"/>
+        android:backgroundTint="@color/design_default_color_background" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

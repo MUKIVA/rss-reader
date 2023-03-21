@@ -10,7 +10,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.mukiva.rssreader.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var _appBarConfiguration: AppBarConfiguration
     private lateinit var _binding: ActivityMainBinding
     private lateinit var _navController: NavController
@@ -35,9 +34,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         _navController = navHostFragment.navController
-
         _appBarConfiguration = AppBarConfiguration(_navController.graph)
-
         setupActionBarWithNavController(_navController, _appBarConfiguration)
     }
 }

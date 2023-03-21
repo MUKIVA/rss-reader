@@ -24,15 +24,18 @@ class MockFeedService : FeedsService {
         return _feeds[feedIndex].news
     }
 
-    override suspend fun deleteFeed(feedIndex: Int) {
+    override suspend fun deleteFeed(feedIndex: Int): MutableList<Feed> {
         _feeds.removeAt(feedIndex)
+        return _feeds
     }
 
-    override suspend fun addFeed(feed: Feed) {
+    override suspend fun addFeed(feed: Feed): MutableList<Feed> {
         _feeds.add(feed.copy())
+        return _feeds
     }
 
-    override fun getAllFeeds(): MutableList<Feed> {
+    override suspend fun getAllFeeds(): MutableList<Feed> {
+        delay(5000)
         return _feeds
     }
 
