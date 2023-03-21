@@ -34,5 +34,6 @@
     <string name="delete_alert_dialog_positive">Удалить</string>
     <string name="delete_alert_dialog_negative">Отмена</string>
     <string name="delete_alert_dialog_message">Вы действительно хотите удалить %1$s?</string>
+    <string name="search_time_out_error">Превышено время ожидания</string>
 
 </resources>

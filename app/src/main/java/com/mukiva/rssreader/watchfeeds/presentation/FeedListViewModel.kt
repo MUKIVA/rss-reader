@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mukiva.rssreader.R
-import com.mukiva.rssreader.watchfeeds.data.IFeedsService
+import com.mukiva.rssreader.watchfeeds.data.FeedsService
 import com.mukiva.rssreader.watchfeeds.domain.Feed
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -29,7 +29,7 @@ sealed class FeedEvents {
 }
 
 class FeedListViewModel(
-    private val _feedsService: IFeedsService,
+    private val _feedsService: FeedsService,
 ) : ViewModel() {
     private val _maxPageCount = 10
     private val _eventChanel = Channel<FeedEvents>()

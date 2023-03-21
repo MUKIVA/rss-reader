@@ -7,7 +7,7 @@ import com.mukiva.rssreader.App
 import com.mukiva.rssreader.watchfeeds.presentation.FeedListViewModel
 import com.mukiva.rssreader.watchfeeds.presentation.NewsListViewModel
 
-class ViewModelFactory(
+class FeedViewModelFactory(
     private val _app: App
 ) : ViewModelProvider.Factory {
 
@@ -29,4 +29,4 @@ class ViewModelFactory(
     }
 }
 
-fun Fragment.factory() = ViewModelFactory(requireContext().applicationContext as App)
+fun Fragment.factory() = FeedViewModelFactory(requireContext().applicationContext as App)

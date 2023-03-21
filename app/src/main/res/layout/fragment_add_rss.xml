@@ -10,7 +10,7 @@
     android:paddingHorizontal="16dp"
     tools:context=".addrss.ui.AddRssFragment">
 
-    <com.mukiva.rssreader.components.SearchRssView
+    <com.mukiva.rssreader.addrss.ui.SearchRssView
         android:id="@+id/search_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

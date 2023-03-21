@@ -3,7 +3,7 @@ package com.mukiva.rssreader.watchfeeds.presentation
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mukiva.rssreader.watchfeeds.data.IFeedsService
+import com.mukiva.rssreader.watchfeeds.data.FeedsService
 import com.mukiva.rssreader.watchfeeds.domain.News
 import kotlinx.coroutines.launch
 import kotlin.Exception
@@ -21,7 +21,7 @@ data class NewsListState(
 )
 
 class NewsListViewModel(
-    private val _feedsService: IFeedsService,
+    private val _feedsService: FeedsService,
 ) : ViewModel() {
     private val _state = MutableLiveData<NewsListState>()
     val state: MutableLiveData<NewsListState> = _state

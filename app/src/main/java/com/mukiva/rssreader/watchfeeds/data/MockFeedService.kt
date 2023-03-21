@@ -5,11 +5,11 @@ import com.mukiva.rssreader.watchfeeds.domain.News
 import kotlinx.coroutines.delay
 import java.util.*
 
-class MockFeedService : IFeedsService {
+class MockFeedService : FeedsService {
     private var _feeds = mutableListOf<Feed>()
 
     init {
-        _feeds = (0..9).map {
+        _feeds = (0..2).map {
             Feed(
                 title = "Title $it",
                 description = "Description $it",
@@ -28,10 +28,8 @@ class MockFeedService : IFeedsService {
         _feeds.removeAt(feedIndex)
     }
 
-    override suspend fun addFeed(link: String): Feed {
-        val feed = loadFeed(link)
-        _feeds.add(feed)
-        return _feeds.last()
+    override suspend fun addFeed(feed: Feed) {
+        _feeds.add(feed.copy())
     }
 
     override fun getAllFeeds(): MutableList<Feed> {

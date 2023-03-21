@@ -1,4 +1,4 @@
-package com.mukiva.rssreader.components
+package com.mukiva.rssreader.watchfeeds.ui
 
 import android.content.Context
 import android.util.AttributeSet

@@ -21,7 +21,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mukiva.rssreader.R
-import com.mukiva.rssreader.components.FeedInfoBottomSheetDialog
 import com.mukiva.rssreader.databinding.FragmentWatchFeedsBinding
 import com.mukiva.rssreader.watchfeeds.di.factory
 import com.mukiva.rssreader.watchfeeds.domain.Feed

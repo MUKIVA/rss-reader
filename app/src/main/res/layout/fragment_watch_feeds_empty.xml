@@ -14,7 +14,7 @@
         android:text="@string/add_first_rss_text"
         android:textAlignment="center" />
 
-    <com.mukiva.rssreader.components.SearchRssView
+    <com.mukiva.rssreader.addrss.ui.SearchRssView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"

@@ -3,8 +3,10 @@ package com.mukiva.rssreader.addrss.ui
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.mukiva.rssreader.R
+import com.mukiva.rssreader.addrss.di.factory
 import com.mukiva.rssreader.addrss.presentation.AddRssState
 import com.mukiva.rssreader.addrss.presentation.AddRssStateType
 import com.mukiva.rssreader.databinding.FragmentAddRssBinding
@@ -12,22 +14,27 @@ import com.mukiva.rssreader.addrss.presentation.AddRssViewModel
 
 class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
     private lateinit var _binding: FragmentAddRssBinding
-    private lateinit var _viewModel: AddRssViewModel
+    private val _viewModel: AddRssViewModel by viewModels { factory() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initFields(view)
         observeViewModel()
-        setListeners()
+        initActions()
     }
 
-    private fun setListeners() {
+    private fun initActions() {
+        _binding.searchField.setFieldListener { text, _, _, _ ->
+            _viewModel.triggerSearch(text.toString())
+        }
 
+        _binding.searchField.setBtnListener {
+            _viewModel.addRss()
+            findNavController().popBackStack()
+        }
     }
 
     private fun initFields(view: View) {
-        _viewModel = ViewModelProvider(this)[AddRssViewModel::class.java]
         _binding = FragmentAddRssBinding.bind(view)
     }
 
@@ -36,30 +43,37 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
     }
 
     private fun render(state: AddRssState) {
-
+        _binding.searchField.errorMessageText = getString(state.errorMessage)
+        _binding.searchField.setRssItem(state.rssItem)
         when(state.stateType) {
             AddRssStateType.NORMAL -> renderNormalState()
             AddRssStateType.SEARCH -> renderSearchState()
             AddRssStateType.SEARCH_FAIL -> renderSearchFailState()
             AddRssStateType.SEARCH_SUCCESS -> renderSearchSuccessState()
         }
-
     }
 
     private fun renderNormalState() {
-
+        _binding.searchField.inProgress = false
+        _binding.searchField.errorMsgIsVisible = false
+        _binding.searchField.previewAreaIsVisible = false
     }
 
     private fun renderSearchState() {
-
+        _binding.searchField.inProgress = true
+        _binding.searchField.errorMsgIsVisible = false
+        _binding.searchField.previewAreaIsVisible = false
     }
 
     private fun renderSearchFailState() {
-
+        _binding.searchField.inProgress = false
+        _binding.searchField.errorMsgIsVisible = true
+        _binding.searchField.previewAreaIsVisible = false
     }
 
     private fun renderSearchSuccessState() {
-
+        _binding.searchField.inProgress = false
+        _binding.searchField.errorMsgIsVisible = false
+        _binding.searchField.previewAreaIsVisible = true
     }
-
 }
