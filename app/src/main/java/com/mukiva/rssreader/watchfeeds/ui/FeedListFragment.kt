@@ -68,6 +68,8 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         initFields(view)
         observeViewModel()
         initPager()
+
+        _viewModel.loadFeeds()
     }
 
     override fun onResume() {

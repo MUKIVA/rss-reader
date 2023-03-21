@@ -14,7 +14,7 @@ class SearchViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val viewModel = when ( modelClass ) {
             AddRssViewModel::class.java -> {
-                AddRssViewModel(_app.SearchService, _app.feedsService)
+                AddRssViewModel(_app.searchService, _app.feedsService)
             }
             else -> {
                 throw IllegalStateException("Unknown view model class")

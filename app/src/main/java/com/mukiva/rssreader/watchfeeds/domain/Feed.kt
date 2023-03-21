@@ -4,5 +4,5 @@ data class Feed(
     val title: String,
     val description: String,
     val newsRepoLink: String,
-    var news: MutableList<News>
+    val news: MutableList<News>
 )

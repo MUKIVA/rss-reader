@@ -6,5 +6,5 @@ import com.mukiva.rssreader.watchfeeds.data.MockFeedService
 
 class App : Application() {
     val feedsService = MockFeedService()
-    val SearchService = MockSearchRssService()
+    val searchService = MockSearchRssService()
 }

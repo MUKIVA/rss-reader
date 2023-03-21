@@ -8,39 +8,30 @@ import java.util.*
 class MockFeedService : FeedsService {
     private var _feeds = mutableListOf<Feed>()
 
-    init {
-        _feeds = (0..2).map {
-            Feed(
-                title = "Title $it",
-                description = "Description $it",
-                newsRepoLink = "https://google.com",
-                news = mutableListOf())
-                }.toMutableList()
-        }
-
     override suspend fun refreshNews(feedIndex: Int): MutableList<News> {
         val feed = loadFeed(_feeds[feedIndex].newsRepoLink)
-        _feeds[feedIndex].news = feed.news
-        return _feeds[feedIndex].news
+        _feeds[feedIndex] = _feeds[feedIndex].copy(
+            news = feed.news
+        )
+        return _feeds[feedIndex].news.toMutableList()
     }
 
     override suspend fun deleteFeed(feedIndex: Int): MutableList<Feed> {
         _feeds.removeAt(feedIndex)
-        return _feeds
+        return _feeds.toMutableList()
     }
 
     override suspend fun addFeed(feed: Feed): MutableList<Feed> {
         _feeds.add(feed.copy())
-        return _feeds
+        return _feeds.toMutableList()
     }
 
     override suspend fun getAllFeeds(): MutableList<Feed> {
-        delay(5000)
-        return _feeds
+        return _feeds.toMutableList()
     }
 
     override suspend fun getNewsByIndex(feedIndex: Int): MutableList<News> {
-        return _feeds[feedIndex].news
+        return _feeds[feedIndex].news.toMutableList()
     }
 
     private suspend fun loadFeed(link: String): Feed {
@@ -49,7 +40,7 @@ class MockFeedService : FeedsService {
             title = link,
             description = "Description",
             newsRepoLink = link,
-            news = (0..10000).map { News(
+            news = (0..100).map { News(
                 title = "Title $it",
                 description = "Description $it",
                 date = Date()

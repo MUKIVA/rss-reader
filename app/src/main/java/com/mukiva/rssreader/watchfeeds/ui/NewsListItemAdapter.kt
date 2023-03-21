@@ -4,12 +4,32 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.mukiva.rssreader.databinding.ViewNewsListItemBinding
 import com.mukiva.rssreader.watchfeeds.domain.News
 
 interface FeedItemActions {
     fun onItemDetails(item: News)
+}
+
+class NewsDiffUtilCallback(
+    private val _oldList: List<News>,
+    private val _newList: List<News>
+) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int = _oldList.size
+    override fun getNewListSize(): Int = _newList.size
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val old = _oldList[oldItemPosition]
+        val new = _newList[newItemPosition]
+        return old.title == new.title
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val old = _oldList[oldItemPosition]
+        val new = _newList[newItemPosition]
+        return old == new
+    }
 }
 
 class NewsListItemAdapter(
@@ -23,8 +43,10 @@ class NewsListItemAdapter(
     var items: List<News> = emptyList()
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
+            val diffCallback = NewsDiffUtilCallback(field, value)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
             field = value
-            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this)
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemsViewHolder {
