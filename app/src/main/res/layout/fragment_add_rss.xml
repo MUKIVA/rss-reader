@@ -13,32 +13,6 @@
     <com.mukiva.rssreader.components.SearchRssView
         android:id="@+id/search_field"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:paddingEnd="8dp"
-        android:paddingStart="16dp"
-        android:background="@drawable/bg_search_input_field"/>
-
-    <TextView
-        android:id="@+id/error_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/search_error_parse"
-        android:textColor="#FF0000"
-        android:visibility="gone" />
-
-    <com.mukiva.rssreader.components.RssItemView
-        android:id="@+id/rss_item_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"/>
-
-    <Button
-        android:id="@+id/add_rss_button"
-        android:text="@string/add_rss_button_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

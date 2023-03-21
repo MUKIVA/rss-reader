@@ -1,10 +1,8 @@
 package com.mukiva.rssreader
 
 import android.app.Application
-import com.mukiva.rssreader.watchfeeds.data.FeedItemsService
+import com.mukiva.rssreader.watchfeeds.data.MockFeedService
 
 class App : Application() {
-
-    val feedItemsService = FeedItemsService()
-
+    val feedsService = MockFeedService()
 }

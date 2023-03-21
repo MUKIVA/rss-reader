@@ -4,8 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.databinding.ViewSearchRssBinding
+import com.mukiva.rssreader.watchfeeds.domain.Feed
 
 class SearchRssView
 @JvmOverloads constructor (
@@ -32,12 +34,33 @@ class SearchRssView
             val fieldHint = typedArray.getString(R.styleable.SearchRssView_field_hint) ?: resources.getString(R.string.search_rss_hint)
             searchRssField.hint = fieldHint
 
-            when (typedArray.getBoolean(R.styleable.SearchRssView_field_isProgress, false)) {
-                true -> searchRssProgressBar.visibility = VISIBLE
-                false -> searchRssProgressBar.visibility = GONE
-            }
+            val fieldIsProgress = typedArray.getBoolean(R.styleable.SearchRssView_field_isProgress, false)
+            searchRssProgressBar.isVisible = fieldIsProgress
         }
 
         typedArray.recycle()
+    }
+
+    fun setRssItem(item: Feed) {
+        with (_binding) {
+            rssItemTitleText.text = item.title
+            rssItemDescriptionText.text = item.description
+        }
+    }
+
+    var errorMessageText: String
+        get() = _binding.errorText.text.toString()
+        set(value) {
+            _binding.errorText.text = value
+        }
+
+    var errorMsgIsVisible: Boolean
+        get() = _binding.errorText.isVisible
+        set(value) {
+            _binding.errorText.isVisible = value
+        }
+
+    fun setBtnListener(onClickListener: OnClickListener) {
+        _binding.addToFeedBtn.setOnClickListener(onClickListener)
     }
 }

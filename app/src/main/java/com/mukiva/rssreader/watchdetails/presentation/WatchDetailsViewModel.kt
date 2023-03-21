@@ -2,7 +2,7 @@ package com.mukiva.rssreader.watchdetails.presentation
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.mukiva.rssreader.watchfeeds.domain.FeedItem
+import com.mukiva.rssreader.watchfeeds.domain.News
 
 enum class WatchDetailsStateType {
     NORMAL,
@@ -23,8 +23,7 @@ class WatchDetailsViewModel : ViewModel() {
         )
     }
 
-    fun parseRssItem(item: FeedItem) {
+    fun parseRssItem(item: News) {
 
     }
-
 }

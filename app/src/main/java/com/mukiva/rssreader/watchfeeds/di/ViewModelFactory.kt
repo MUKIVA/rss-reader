@@ -4,7 +4,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.mukiva.rssreader.App
-import com.mukiva.rssreader.watchfeeds.presentation.RssFeedViewModel
+import com.mukiva.rssreader.watchfeeds.presentation.FeedListViewModel
+import com.mukiva.rssreader.watchfeeds.presentation.NewsListViewModel
 
 class ViewModelFactory(
     private val _app: App
@@ -13,8 +14,11 @@ class ViewModelFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val viewModel = when ( modelClass ) {
-            RssFeedViewModel::class.java -> {
-                RssFeedViewModel(_app.feedItemsService)
+            NewsListViewModel::class.java -> {
+                NewsListViewModel(_app.feedsService)
+            }
+            FeedListViewModel::class.java -> {
+                FeedListViewModel(_app.feedsService)
             }
             else -> {
                 throw IllegalStateException("Unknown view model class")

@@ -5,22 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.mukiva.rssreader.databinding.ViewFeedListItemBinding
-import com.mukiva.rssreader.watchfeeds.domain.FeedItem
+import com.mukiva.rssreader.databinding.ViewNewsListItemBinding
+import com.mukiva.rssreader.watchfeeds.domain.News
 
 interface FeedItemActions {
-    fun onItemDetails(item: FeedItem)
+    fun onItemDetails(item: News)
 }
 
-class RssFeedItemsAdapter(
+class NewsListItemAdapter(
     private val _actionListener: FeedItemActions
-) : RecyclerView.Adapter<RssFeedItemsAdapter.ItemsViewHolder>(), View.OnClickListener {
+) : RecyclerView.Adapter<NewsListItemAdapter.ItemsViewHolder>(), View.OnClickListener {
 
     class ItemsViewHolder(
-        val binding: ViewFeedListItemBinding
+        val binding: ViewNewsListItemBinding
     ) : RecyclerView.ViewHolder(binding.root)
 
-    var items: List<FeedItem> = emptyList()
+    var items: List<News> = emptyList()
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
@@ -29,7 +29,7 @@ class RssFeedItemsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ViewFeedListItemBinding.inflate(inflater, parent, false)
+        val binding = ViewNewsListItemBinding.inflate(inflater, parent, false)
 
         binding.root.setOnClickListener(this)
 
@@ -49,7 +49,7 @@ class RssFeedItemsAdapter(
     }
 
     override fun onClick(v: View) {
-        val item = v.tag as FeedItem
+        val item = v.tag as News
         _actionListener.onItemDetails(item)
     }
 }

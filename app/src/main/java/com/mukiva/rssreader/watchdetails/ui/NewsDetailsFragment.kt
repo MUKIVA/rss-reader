@@ -1,5 +1,6 @@
 package com.mukiva.rssreader.watchdetails.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -17,7 +18,11 @@ import com.mukiva.rssreader.watchdetails.presentation.WatchDetailsState
 import com.mukiva.rssreader.watchdetails.presentation.WatchDetailsStateType
 import com.mukiva.rssreader.watchdetails.presentation.WatchDetailsViewModel
 
-class WatchDetailsMenuProvider : MenuProvider {
+typealias WatchDetailsMenuAction = () -> Boolean
+
+class WatchDetailsMenuProvider(
+    private val _shareAction: WatchDetailsMenuAction
+) : MenuProvider {
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.feed_item_menu, menu)
     }
@@ -25,20 +30,17 @@ class WatchDetailsMenuProvider : MenuProvider {
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId)
         {
-            R.id.share_option -> {
-                Log.d("MENU", "SHARE")
-                return true
-            }
+            R.id.share_option -> _shareAction()
         }
         return false
     }
 }
 
-class WatchDetailsFragment : Fragment(R.layout.fragment_watch_details) {
+class NewsDetailsFragment : Fragment(R.layout.fragment_watch_details) {
 
     private lateinit var _binding: FragmentWatchDetailsBinding
     private lateinit var _viewModel: WatchDetailsViewModel
-    private val _menuProvider = WatchDetailsMenuProvider()
+    private val _menuProvider = WatchDetailsMenuProvider(::shareNews)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,6 +73,18 @@ class WatchDetailsFragment : Fragment(R.layout.fragment_watch_details) {
 
     private  fun renderParseErrorState() {
 
+    }
+
+    private fun shareNews(): Boolean {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "This is my text to send.")
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+        return true
     }
 
     private fun initMenu() {

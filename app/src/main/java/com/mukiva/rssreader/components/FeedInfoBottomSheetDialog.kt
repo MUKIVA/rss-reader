@@ -7,7 +7,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.databinding.ViewFeedInfoBinding
 
-
 class FeedInfoBottomSheetDialog
    @JvmOverloads constructor(
     context: Context,
@@ -15,7 +14,6 @@ class FeedInfoBottomSheetDialog
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr, defStyleRes) {
-
     private val _binding: ViewFeedInfoBinding
 
     init {

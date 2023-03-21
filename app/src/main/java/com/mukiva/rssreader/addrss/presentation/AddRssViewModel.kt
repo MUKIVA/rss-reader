@@ -2,7 +2,7 @@ package com.mukiva.rssreader.addrss.presentation
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.mukiva.rssreader.watchfeeds.domain.RssItem
+import com.mukiva.rssreader.watchfeeds.domain.Feed
 
 enum class AddRssStateType {
     NORMAL,
@@ -15,7 +15,7 @@ data class AddRssState (
     val stateType: AddRssStateType,
     val errorMessage: String,
     val searchText: String,
-    val rssItem: RssItem?
+    val rssItem: Feed?
 )
 
 class AddRssViewModel : ViewModel() {

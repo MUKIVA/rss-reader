@@ -4,6 +4,9 @@
     <declare-styleable name="SearchRssView">
         <attr name="field_hint" format="string" />
         <attr name="field_isProgress" format="boolean" />
+
+        <attr name="error_text_is_visible" format="boolean" />
+        <attr name="preview_area_is_visible" format="boolean" />
     </declare-styleable>
     
 </resources>
