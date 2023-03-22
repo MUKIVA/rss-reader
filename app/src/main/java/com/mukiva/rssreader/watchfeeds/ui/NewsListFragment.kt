@@ -1,6 +1,5 @@
 package com.mukiva.rssreader.watchfeeds.ui
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -34,15 +33,17 @@ class NewsListFragment : Fragment(R.layout.fragment_news_list) {
         observeViewModel()
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        lifecycleScope.launchWhenResumed {
-            _viewModel.loadData(_position)
-        }
+    override fun onResume() {
+        super.onResume()
+        reloadWhenResume()
     }
 
     fun setPosition(position: Int) {
         _position = position
+    }
+
+    private fun reloadWhenResume() = lifecycleScope.launchWhenResumed {
+        _viewModel.loadData(_position)
     }
 
     private fun refresh() {
@@ -70,9 +71,7 @@ class NewsListFragment : Fragment(R.layout.fragment_news_list) {
     }
 
     private fun observeViewModel() {
-        _viewModel.state.observe(viewLifecycleOwner) { state ->
-            render(state)
-        }
+        _viewModel.state.observe(viewLifecycleOwner, ::render)
     }
 
     private fun initRecyclerView() {

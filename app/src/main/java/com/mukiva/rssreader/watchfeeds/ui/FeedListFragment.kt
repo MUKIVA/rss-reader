@@ -68,13 +68,16 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         initFields(view)
         observeViewModel()
         initPager()
-
-        _viewModel.loadFeeds()
     }
 
     override fun onResume() {
         super.onResume()
         initActions()
+        loadWhenResume()
+    }
+
+    private fun loadWhenResume() = lifecycleScope.launchWhenResumed {
+        _viewModel.loadFeeds()
     }
 
     private fun initActions() {
@@ -91,21 +94,22 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
     }
 
     private fun observeViewModel() {
-        _viewModel.state.observe(viewLifecycleOwner) { state ->
-            render(state)
-        }
-        lifecycleScope.launchWhenStarted {
-            _viewModel.eventFlow.collect { event ->
-                when (event) {
-                    is FeedEvents.DeleteRssEvent -> showDeleteAlertDialog(event.feed)
-                    is FeedEvents.AddRssEvent -> findNavController().navigate(R.id.action_watchFeedsFragment_to_addRssFragment)
-                    is FeedEvents.ShowToastEvent -> Toast.makeText(requireContext(), event.msgId, Toast.LENGTH_SHORT).show()
-                    is FeedEvents.ShowFeedDetails -> showAboutFeedDialog(event.feed)
-                }
-            }
-        }
+        _viewModel.state.observe(viewLifecycleOwner, ::render)
+        collectEventFlow()
     }
 
+    private fun collectEventFlow() = lifecycleScope.launchWhenResumed {
+        _viewModel.eventFlow.collect(::handleSingleEvents)
+    }
+
+    private fun handleSingleEvents(event: FeedEvents) {
+        when (event) {
+            is FeedEvents.DeleteRssEvent -> showDeleteAlertDialog(event.feed)
+            is FeedEvents.AddRssEvent -> findNavController().navigate(R.id.action_watchFeedsFragment_to_addRssFragment)
+            is FeedEvents.ShowToastEvent -> Toast.makeText(requireContext(), event.msgId, Toast.LENGTH_SHORT).show()
+            is FeedEvents.ShowFeedDetails -> showAboutFeedDialog(event.feed)
+        }
+    }
     private fun render(state: FeedState) {
         when (state.stateType) {
             FeedStateType.LOADING -> renderLoadingState()

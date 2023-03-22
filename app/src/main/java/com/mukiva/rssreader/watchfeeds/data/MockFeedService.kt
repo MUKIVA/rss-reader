@@ -8,6 +8,16 @@ import java.util.*
 class MockFeedService : FeedsService {
     private var _feeds = mutableListOf<Feed>()
 
+    init {
+        _feeds = (1..10).map {
+            Feed(
+                title = "asdasd",
+                description = "asdasd",
+                newsRepoLink = "asdasd",
+                news = mutableListOf()
+            ) }.toMutableList()
+    }
+
     override suspend fun refreshNews(feedIndex: Int): MutableList<News> {
         val feed = loadFeed(_feeds[feedIndex].newsRepoLink)
         _feeds[feedIndex] = _feeds[feedIndex].copy(

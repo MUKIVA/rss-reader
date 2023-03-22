@@ -2,7 +2,6 @@ package com.mukiva.rssreader.watchdetails.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -57,7 +56,7 @@ class NewsDetailsFragment : Fragment(R.layout.fragment_watch_details) {
     }
 
     private fun observeViewModel() {
-        _viewModel.state.observe(viewLifecycleOwner) { state -> render(state) }
+        _viewModel.state.observe(viewLifecycleOwner, ::render)
     }
 
     private fun render(state: WatchDetailsState) {

@@ -46,7 +46,7 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
     }
 
     private fun observeViewModel() {
-        _viewModel.state.observe(viewLifecycleOwner) { state -> render(state) }
+        _viewModel.state.observe(viewLifecycleOwner, ::render)
     }
 
     private fun render(state: AddRssState) {

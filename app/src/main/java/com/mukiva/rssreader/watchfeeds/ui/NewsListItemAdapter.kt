@@ -53,8 +53,6 @@ class NewsListItemAdapter(
         val inflater = LayoutInflater.from(parent.context)
         val binding = ViewNewsListItemBinding.inflate(inflater, parent, false)
 
-        binding.root.setOnClickListener(this)
-
         return ItemsViewHolder(binding)
     }
 
@@ -67,6 +65,7 @@ class NewsListItemAdapter(
             feedItemTitleText.text = item.title
             feedItemDescriptionText.text = item.description
             feedItemDateText.text = item.date.toString()
+            root.setOnClickListener(this@NewsListItemAdapter)
         }
     }
 
