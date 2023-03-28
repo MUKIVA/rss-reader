@@ -28,7 +28,6 @@ import com.mukiva.rssreader.watchfeeds.presentation.FeedState
 import com.mukiva.rssreader.watchfeeds.presentation.FeedStateType
 import com.mukiva.rssreader.watchfeeds.presentation.FeedListViewModel
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.launch
 
 class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
     private lateinit var _binding: FragmentWatchFeedsBinding
@@ -139,23 +138,17 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
     }
 
     private fun deleteRss() : Boolean {
-        lifecycleScope.launch {
-            _viewModel.triggerDeleteFeed(_binding.tabLayout.selectedTabPosition)
-        }
+        _viewModel.triggerDeleteFeed(_binding.tabLayout.selectedTabPosition)
         return true
     }
 
     private fun addRssFeed() : Boolean {
-        lifecycleScope.launch {
-            _viewModel.triggerAddFeed()
-        }
+        _viewModel.triggerAddFeed()
         return true
     }
 
     private fun aboutFeed() : Boolean {
-        lifecycleScope.launch {
-            _viewModel.triggerAboutFeedDialog(_binding.feedViewPager.currentItem)
-        }
+        _viewModel.triggerAboutFeedDialog(_binding.feedViewPager.currentItem)
         return true
     }
 
