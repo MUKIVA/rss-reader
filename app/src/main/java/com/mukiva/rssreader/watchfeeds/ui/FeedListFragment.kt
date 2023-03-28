@@ -1,3 +1,5 @@
+@file:OptIn(FlowPreview::class)
+
 package com.mukiva.rssreader.watchfeeds.ui
 
 import android.app.AlertDialog
@@ -29,13 +31,15 @@ import com.mukiva.rssreader.watchfeeds.presentation.FeedEvents
 import com.mukiva.rssreader.watchfeeds.presentation.FeedState
 import com.mukiva.rssreader.watchfeeds.presentation.FeedStateType
 import com.mukiva.rssreader.watchfeeds.presentation.FeedListViewModel
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.launch
 
 typealias ProviderAction = () -> Boolean
 
 class WatchFeedsMenuProvider(
-    private var aboutFeed : ProviderAction,
-    private var addFeed : ProviderAction,
-    private var deleteFeed : ProviderAction
+    private var _aboutFeed : ProviderAction,
+    private var _addFeed : ProviderAction,
+    private var _deleteFeed : ProviderAction
 ) : MenuProvider {
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -45,9 +49,9 @@ class WatchFeedsMenuProvider(
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId)
         {
-            R.id.about_feed -> return aboutFeed()
-            R.id.add_feed -> return addFeed()
-            R.id.delete_feed -> return deleteFeed()
+            R.id.about_feed -> return _aboutFeed()
+            R.id.add_feed -> return _addFeed()
+            R.id.delete_feed -> return _deleteFeed()
         }
         return false
     }
@@ -58,9 +62,9 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
     private val _viewModel: FeedListViewModel by viewModels { factory() }
     private lateinit var _adapter: NewsListFragmentAdapter
     private val _menuProvider = WatchFeedsMenuProvider(
-        aboutFeed = { aboutFeed() },
-        addFeed = { addRssFeed() },
-        deleteFeed = { deleteRss() }
+        _aboutFeed = { aboutFeed() },
+        _addFeed = { addRssFeed() },
+        _deleteFeed = { deleteRss() }
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -162,17 +166,23 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
     }
 
     private fun deleteRss() : Boolean {
-        _viewModel.triggerDeleteFeed(_binding.tabLayout.selectedTabPosition)
+        lifecycleScope.launch {
+            _viewModel.triggerDeleteFeed(_binding.tabLayout.selectedTabPosition)
+        }
         return true
     }
 
     private fun addRssFeed() : Boolean {
-        _viewModel.triggerAddFeed()
+        lifecycleScope.launch {
+            _viewModel.triggerAddFeed()
+        }
         return true
     }
 
     private fun aboutFeed() : Boolean {
-        _viewModel.triggerAboutFeedDialog(_binding.feedViewPager.currentItem)
+        lifecycleScope.launch {
+            _viewModel.triggerAboutFeedDialog(_binding.feedViewPager.currentItem)
+        }
         return true
     }
 

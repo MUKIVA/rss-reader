@@ -1,3 +1,5 @@
+@file:OptIn(FlowPreview::class)
+
 package com.mukiva.rssreader.addrss.ui
 
 import android.os.Bundle
@@ -5,6 +7,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.addrss.di.factory
@@ -12,6 +15,8 @@ import com.mukiva.rssreader.addrss.presentation.AddRssState
 import com.mukiva.rssreader.addrss.presentation.AddRssStateType
 import com.mukiva.rssreader.databinding.FragmentAddRssBinding
 import com.mukiva.rssreader.addrss.presentation.AddRssViewModel
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.launch
 
 class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
     private lateinit var _binding: FragmentAddRssBinding
@@ -31,8 +36,9 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
     }
 
     private fun initActions() {
+
         _binding.searchField.setFieldListener { text, _, _, _ ->
-            _viewModel.triggerSearch(text.toString())
+            lifecycleScope.launch { _viewModel.triggerSearch(text.toString()) }
         }
 
         _binding.searchField.setBtnListener {
@@ -50,7 +56,7 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
     }
 
     private fun render(state: AddRssState) {
-        _binding.searchField.errorMessageText = getString(state.errorMessage)
+        _binding.searchField.errorMessageText = state.errorMessage?.let { getString(it) }.toString()
         _binding.searchField.setRssItem(state.rssItem)
         when(state.stateType) {
             AddRssStateType.NORMAL -> renderNormalState()

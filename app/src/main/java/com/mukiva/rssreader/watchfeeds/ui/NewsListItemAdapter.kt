@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mukiva.rssreader.databinding.ViewNewsListItemBinding
 import com.mukiva.rssreader.watchfeeds.domain.News
 
@@ -65,6 +68,15 @@ class NewsListItemAdapter(
             feedItemTitleText.text = item.title
             feedItemDescriptionText.text = item.description
             feedItemDateText.text = item.date.toString()
+
+            val drawable = feedItemImage.drawable
+
+            Glide.with(holder.itemView)
+                .load(item.imageLink)
+                .transform(CenterCrop(), RoundedCorners(14))
+                .into(feedItemImage)
+                .onLoadFailed(drawable)
+
             root.setOnClickListener(this@NewsListItemAdapter)
         }
     }

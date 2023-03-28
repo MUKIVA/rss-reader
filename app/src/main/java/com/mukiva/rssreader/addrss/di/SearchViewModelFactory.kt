@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.mukiva.rssreader.App
 import com.mukiva.rssreader.addrss.presentation.AddRssViewModel
+import kotlinx.coroutines.FlowPreview
 
+@FlowPreview
 class SearchViewModelFactory(
     private val _app: App
 ) : ViewModelProvider.Factory {
@@ -25,4 +27,5 @@ class SearchViewModelFactory(
     }
 }
 
+@FlowPreview
 fun Fragment.factory() = SearchViewModelFactory(requireContext().applicationContext as App)

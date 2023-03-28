@@ -1,16 +1,22 @@
 package com.mukiva.rssreader.addrss.presentation
 
 import android.os.CountDownTimer
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.addrss.data.SearchRssService
+import com.mukiva.rssreader.addrss.domain.SearchException
+import com.mukiva.rssreader.addrss.domain.SearchException.*
+import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
 import com.mukiva.rssreader.watchfeeds.data.FeedsService
 import com.mukiva.rssreader.watchfeeds.domain.Feed
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 enum class AddRssStateType {
     NORMAL,
@@ -21,79 +27,91 @@ enum class AddRssStateType {
 
 data class AddRssState (
     val stateType: AddRssStateType,
-    val errorMessage: Int,
+    val errorMessage: Int?,
     val rssItem: Feed?
 )
 
+@FlowPreview
 class AddRssViewModel(
     private val _searchRssService: SearchRssService,
     private val _feedsService: FeedsService
-) : ViewModel() {
-    private val _state = MutableLiveData<AddRssState>()
-    val state: MutableLiveData<AddRssState> = _state
-    private var _timer: CountDownTimer? = null
-    private val _timerTime: Long = 15000
-    private val _startSearchTime: Long = 14000
-    private val _timerInterval: Long = 1
-    private var _scope: CoroutineScope? = null
+) : SingleStateViewModel<AddRssState>(
+    AddRssState(
+        stateType = AddRssStateType.NORMAL,
+        errorMessage = null,
+        rssItem = null
+    )
+) {
+
+    private val _searchDebounce = MutableSharedFlow<String>()
+
+    companion object {
+        private const val TIME_TO_SEARCH: Long = 1000
+    }
 
     init {
-        _state.value = AddRssState(
-            stateType = AddRssStateType.NORMAL,
-            errorMessage = R.string.search_time_out_error,
-            rssItem = null
-        )
+
+        _searchDebounce
+            .debounce(TIME_TO_SEARCH)
+            .onEach { search(it) }
+            .launchIn(viewModelScope)
+
     }
 
-    fun triggerSearch(text: String) {
-        cancelSearch()
-        if (text.isEmpty()) return
-        _timer = object : CountDownTimer(_timerTime, _timerInterval) {
-            override fun onTick(currentTime: Long) {
-                if (currentTime <= _startSearchTime && _state.value!!.stateType != AddRssStateType.SEARCH)
-                    search(text)
-            }
-            override fun onFinish() { timeOutError() }
-        }
-        _timer?.start()
-    }
-
-    private fun cancelSearch() {
-        _timer?.cancel()
-        _scope?.cancel()
-        _state.value = _state.value!!.copy( stateType = AddRssStateType.NORMAL)
-    }
-
-    private fun timeOutError() {
-        cancelSearch()
-        _state.value = AddRssState(
-            stateType = AddRssStateType.SEARCH_FAIL,
-            errorMessage = R.string.search_time_out_error,
-            rssItem = null
-        )
-    }
-
-    private fun search(link: String) = viewModelScope.launch {
-        _scope?.cancel()
-        _scope = this
-        try {
-            _state.value = _state.value!!.copy( stateType = AddRssStateType.SEARCH)
-            val feed = _searchRssService.search(link)
-            _state.value = _state.value!!.copy(
-                stateType = AddRssStateType.SEARCH_SUCCESS,
-                rssItem = feed
-            )
-        } catch (e: Exception) {
-            _state.value = _state.value!!.copy(
-                stateType = AddRssStateType.SEARCH_FAIL,
-                errorMessage = R.string.search_error_network
-            )
-        } finally {
-            _timer?.cancel()
-        }
+    suspend fun triggerSearch(text: String) {
+        _searchDebounce.emit(text)
     }
 
     fun addRss() = viewModelScope.launch {
-        _feedsService.addFeed(_state.value!!.rssItem!!)
+        _feedsService.addFeed(getState().rssItem!!)
+    }
+
+    private suspend fun search(link: String) {
+
+        if (link.isEmpty()) return
+
+        try {
+            modifyState { getState().copy(stateType = AddRssStateType.SEARCH) }
+            val feed = _searchRssService.search(link)
+            modifyState(getState().copy(
+                stateType = AddRssStateType.SEARCH_SUCCESS,
+                rssItem = feed
+            ))
+        } catch (e: SearchException) {
+            when (e) {
+                is InvalidUrlException -> handleInvalidUrl()
+                is TimeOutException -> handleTimeoutError()
+                is ConnectionException -> handleConnectionError()
+                is BackendException -> handleBackendError()
+            }
+        }
+    }
+
+    private fun handleInvalidUrl() {
+        modifyState(getState().copy(
+            stateType = AddRssStateType.SEARCH_FAIL,
+            errorMessage = R.string.search_error_parse
+        ))
+    }
+
+    private fun handleTimeoutError() {
+        modifyState(getState().copy(
+            stateType = AddRssStateType.SEARCH_FAIL,
+            errorMessage = R.string.search_time_out_error
+        ))
+    }
+
+    private fun handleConnectionError() {
+        modifyState(getState().copy(
+            stateType = AddRssStateType.SEARCH_FAIL,
+            errorMessage = R.string.search_error_network
+        ))
+    }
+
+    private fun handleBackendError() {
+        modifyState(getState().copy(
+            stateType = AddRssStateType.SEARCH_FAIL,
+            errorMessage = R.string.search_error_parse
+        ))
     }
 }

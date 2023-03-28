@@ -8,40 +8,32 @@ import java.util.*
 class MockFeedService : FeedsService {
     private var _feeds = mutableListOf<Feed>()
 
-    init {
-        _feeds = (1..10).map {
-            Feed(
-                title = "asdasd",
-                description = "asdasd",
-                newsRepoLink = "asdasd",
-                news = mutableListOf()
-            ) }.toMutableList()
-    }
+    init {}
 
-    override suspend fun refreshNews(feedIndex: Int): MutableList<News> {
+    override suspend fun refreshNews(feedIndex: Int): List<News> {
         val feed = loadFeed(_feeds[feedIndex].newsRepoLink)
         _feeds[feedIndex] = _feeds[feedIndex].copy(
             news = feed.news
         )
-        return _feeds[feedIndex].news.toMutableList()
+        return _feeds[feedIndex].news.toList()
     }
 
-    override suspend fun deleteFeed(feedIndex: Int): MutableList<Feed> {
+    override suspend fun deleteFeed(feedIndex: Int): List<Feed> {
         _feeds.removeAt(feedIndex)
-        return _feeds.toMutableList()
+        return _feeds.toList()
     }
 
-    override suspend fun addFeed(feed: Feed): MutableList<Feed> {
+    override suspend fun addFeed(feed: Feed): List<Feed> {
         _feeds.add(feed.copy())
-        return _feeds.toMutableList()
+        return _feeds.toList()
     }
 
-    override suspend fun getAllFeeds(): MutableList<Feed> {
-        return _feeds.toMutableList()
+    override suspend fun getAllFeeds(): List<Feed> {
+        return _feeds.toList()
     }
 
-    override suspend fun getNewsByIndex(feedIndex: Int): MutableList<News> {
-        return _feeds[feedIndex].news.toMutableList()
+    override suspend fun getNewsByIndex(feedIndex: Int): List<News> {
+        return _feeds[feedIndex].news.toList()
     }
 
     private suspend fun loadFeed(link: String): Feed {
@@ -50,11 +42,13 @@ class MockFeedService : FeedsService {
             title = link,
             description = "Description",
             newsRepoLink = link,
+            imageLink = "",
             news = (0..100).map { News(
                 title = "Title $it",
                 description = "Description $it",
-                date = Date()
-            ) }.toMutableList()
+                date = Date(),
+                imageLink = ""
+            ) }.toList()
         )
     }
 }

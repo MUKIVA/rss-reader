@@ -1,8 +1,7 @@
 package com.mukiva.rssreader.watchfeeds.presentation
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
 import com.mukiva.rssreader.watchfeeds.data.FeedsService
 import com.mukiva.rssreader.watchfeeds.domain.News
 import kotlinx.coroutines.launch
@@ -22,37 +21,33 @@ data class NewsListState(
 
 class NewsListViewModel(
     private val _feedsService: FeedsService,
-) : ViewModel() {
-    private val _state = MutableLiveData<NewsListState>()
-    val state: MutableLiveData<NewsListState> = _state
-
-    init {
-        _state.value = NewsListState(
-            stateType = NewsListStateType.LOADING,
-            news = emptyList()
-        )
-    }
+) : SingleStateViewModel<NewsListState>(
+    NewsListState(
+        stateType = NewsListStateType.LOADING,
+        news = listOf()
+    )
+) {
 
     fun loadData(index: Int) = viewModelScope.launch {
         val news = _feedsService.getNewsByIndex(index)
-        _state.value = NewsListState(
+        modifyState(NewsListState(
             stateType = getStateType(news),
             news = news
-        )
+        ))
     }
 
     fun refresh(index: Int) = viewModelScope.launch {
         try {
-            _state.value = _state.value!!.copy(stateType = NewsListStateType.LOADING)
+            modifyState { copy(stateType = NewsListStateType.LOADING) }
             val news = _feedsService.refreshNews(index)
             val stateType = getStateType(news)
-            _state.value = NewsListState(stateType, news)
+            modifyState { NewsListState(stateType, news) }
         } catch (e: Exception) {
-            _state.value = NewsListState(NewsListStateType.FAIL, mutableListOf())
+            modifyState { NewsListState(NewsListStateType.FAIL, mutableListOf()) }
         }
     }
 
-    private fun getStateType(news: MutableList<News>): NewsListStateType {
+    private fun getStateType(news: List<News>): NewsListStateType {
         return when (news.size) {
             0 -> NewsListStateType.EMPTY
             else -> NewsListStateType.NORMAL

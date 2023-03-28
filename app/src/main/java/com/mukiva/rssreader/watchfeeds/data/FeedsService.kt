@@ -4,9 +4,9 @@ import com.mukiva.rssreader.watchfeeds.domain.Feed
 import com.mukiva.rssreader.watchfeeds.domain.News
 
 interface FeedsService {
-    suspend fun refreshNews(feedIndex: Int): MutableList<News>
-    suspend fun deleteFeed(feedIndex: Int): MutableList<Feed>
-    suspend fun addFeed(feed: Feed): MutableList<Feed>
-    suspend fun getAllFeeds(): MutableList<Feed>
-    suspend fun getNewsByIndex(feedIndex: Int): MutableList<News>
+    suspend fun refreshNews(feedIndex: Int): List<News>
+    suspend fun deleteFeed(feedIndex: Int): List<Feed>
+    suspend fun addFeed(feed: Feed): List<Feed>
+    suspend fun getAllFeeds(): List<Feed>
+    suspend fun getNewsByIndex(feedIndex: Int): List<News>
 }

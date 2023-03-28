@@ -1,8 +1,6 @@
 package com.mukiva.rssreader.watchdetails.presentation
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.mukiva.rssreader.watchfeeds.domain.News
+import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
 
 enum class WatchDetailsStateType {
     NORMAL,
@@ -13,17 +11,10 @@ data class WatchDetailsState(
     val stateType: WatchDetailsStateType,
 )
 
-class WatchDetailsViewModel : ViewModel() {
-    private val _state = MutableLiveData<WatchDetailsState>()
-    val state: MutableLiveData<WatchDetailsState> = _state
+class WatchDetailsViewModel : SingleStateViewModel<WatchDetailsState>(
+    WatchDetailsState(
+        stateType = WatchDetailsStateType.NORMAL
+    )
+) {
 
-    init {
-        _state.value = WatchDetailsState(
-            stateType = WatchDetailsStateType.NORMAL
-        )
-    }
-
-    fun parseRssItem(item: News) {
-
-    }
 }
