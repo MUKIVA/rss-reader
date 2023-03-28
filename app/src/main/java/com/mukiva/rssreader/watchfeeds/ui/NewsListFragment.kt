@@ -63,7 +63,7 @@ class NewsListFragment : Fragment(R.layout.fragment_news_list) {
     private fun initFields(view: View) {
         _binding = FragmentNewsListBinding.bind(view)
 
-        _adapter = NewsListItemAdapter(object: FeedItemActions {
+        _adapter = NewsListItemAdapter(object: FeedItemEvent {
             override fun onItemDetails(item: News) {
                 findNavController().navigate(R.id.action_watchFeedsFragment_to_watchDetailsFragment)
             }

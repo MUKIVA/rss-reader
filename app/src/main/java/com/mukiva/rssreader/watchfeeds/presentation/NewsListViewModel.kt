@@ -7,18 +7,6 @@ import com.mukiva.rssreader.watchfeeds.domain.News
 import kotlinx.coroutines.launch
 import kotlin.Exception
 
-enum class NewsListStateType {
-    LOADING,
-    EMPTY,
-    FAIL,
-    NORMAL
-}
-
-data class NewsListState(
-    val stateType: NewsListStateType,
-    val news: List<News>
-)
-
 class NewsListViewModel(
     private val _feedsService: FeedsService,
 ) : SingleStateViewModel<NewsListState>(

@@ -9,24 +9,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-enum class FeedStateType {
-    LOADING,
-    EMPTY,
-    NORMAL
-}
-
-data class FeedState(
-    val stateType: FeedStateType,
-    val feeds: List<Feed>,
-)
-
-sealed class FeedEvents {
-    data class DeleteRssEvent(val feed: Feed) : FeedEvents()
-    data class ShowToastEvent(val msgId: Int) : FeedEvents()
-    object AddRssEvent : FeedEvents()
-    data class ShowFeedDetails(val feed: Feed) : FeedEvents()
-}
-
 class FeedListViewModel(
     private val _feedsService: FeedsService,
 ) : SingleStateViewModel<FeedState>(
