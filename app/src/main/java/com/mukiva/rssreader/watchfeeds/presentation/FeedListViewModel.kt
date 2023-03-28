@@ -5,8 +5,8 @@ import com.mukiva.rssreader.R
 import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
 import com.mukiva.rssreader.watchfeeds.data.FeedsService
 import com.mukiva.rssreader.watchfeeds.domain.Feed
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
 class FeedListViewModel(
@@ -17,9 +17,11 @@ class FeedListViewModel(
         feeds = listOf()
     )
 ) {
+    val eventFlow: SharedFlow<FeedEvents> by lazy { _eventFlow }
+
     private val _maxPageCount = 10
-    private val _eventChanel = Channel<FeedEvents>()
-    val eventFlow = _eventChanel.receiveAsFlow()
+    private val _eventFlow = MutableSharedFlow<FeedEvents>()
+
 
     init {
         loadFeeds()
@@ -61,17 +63,17 @@ class FeedListViewModel(
 
     private fun handleTriggerDeleteFeed(index: Int) = viewModelScope.launch {
         val item = getState().feeds[index]
-        _eventChanel.send(FeedEvents.DeleteRssEvent(item))
+        _eventFlow.emit(FeedEvents.DeleteRssEvent(item))
     }
 
     private fun handleTriggerAddFeed() = viewModelScope.launch {
         if (getState().feeds.size >= _maxPageCount)
-            _eventChanel.send(FeedEvents.ShowToastEvent(R.string.max_feeds_count_msg))
+            _eventFlow.emit(FeedEvents.ShowToastEvent(R.string.max_feeds_count_msg))
         else
-            _eventChanel.send(FeedEvents.AddRssEvent)
+            _eventFlow.emit(FeedEvents.AddRssEvent)
     }
 
     private fun handleTriggerAboutFeedDialog(index: Int) = viewModelScope.launch {
-        _eventChanel.send(FeedEvents.ShowFeedDetails(getState().feeds[index]))
+        _eventFlow.emit(FeedEvents.ShowFeedDetails(getState().feeds[index]))
     }
 }
