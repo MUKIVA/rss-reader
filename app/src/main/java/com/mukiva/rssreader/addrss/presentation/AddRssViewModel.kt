@@ -37,7 +37,6 @@ class AddRssViewModel(
     }
 
     init {
-
         _searchDebounce
             .debounce(TIME_TO_SEARCH)
             .onEach { search(it) }
@@ -45,8 +44,8 @@ class AddRssViewModel(
 
     }
 
-    suspend fun triggerSearch(text: String) {
-        _searchDebounce.emit(text)
+    fun triggerSearch(text: String) {
+        handleTriggerSearch(text)
     }
 
     fun addRss() = viewModelScope.launch {
@@ -100,5 +99,9 @@ class AddRssViewModel(
             stateType = AddRssStateType.SEARCH_FAIL,
             errorMessage = R.string.search_error_parse
         ))
+    }
+
+    private fun handleTriggerSearch(text: String) = viewModelScope.launch {
+        _searchDebounce.emit(text)
     }
 }

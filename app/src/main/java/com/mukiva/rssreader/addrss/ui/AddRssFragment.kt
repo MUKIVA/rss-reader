@@ -7,7 +7,6 @@ import android.view.View
 import android.view.View.OnClickListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.addrss.di.factory
@@ -16,7 +15,6 @@ import com.mukiva.rssreader.addrss.presentation.AddRssStateType
 import com.mukiva.rssreader.databinding.FragmentAddRssBinding
 import com.mukiva.rssreader.addrss.presentation.AddRssViewModel
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.launch
 
 class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
     private lateinit var _binding: FragmentAddRssBinding
@@ -38,7 +36,7 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
     private fun initActions() {
 
         _binding.searchField.setFieldListener { text, _, _, _ ->
-            lifecycleScope.launch { _viewModel.triggerSearch(text.toString()) }
+            _viewModel.triggerSearch(text.toString())
         }
 
         _binding.searchField.setBtnListener {
