@@ -17,7 +17,23 @@ class NewsDetailsFragment : Fragment(R.layout.fragment_watch_details) {
 
     private lateinit var _binding: FragmentWatchDetailsBinding
     private lateinit var _viewModel: WatchDetailsViewModel
-    private val _menuProvider = WatchDetailsMenuProvider(::shareNews)
+
+    private val _menuProvider = WatchDetailsMenuProvider(
+        object : WatchDetailsMenuActions {
+
+            override fun share() {
+                val sendIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, "This is my text to send.")
+                    type = "text/plain"
+                }
+
+                val shareIntent = Intent.createChooser(sendIntent, null)
+                startActivity(shareIntent)
+            }
+
+        }
+    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,18 +66,6 @@ class NewsDetailsFragment : Fragment(R.layout.fragment_watch_details) {
 
     private  fun renderParseErrorState() {
 
-    }
-
-    private fun shareNews(): Boolean {
-        val sendIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, "This is my text to send.")
-            type = "text/plain"
-        }
-
-        val shareIntent = Intent.createChooser(sendIntent, null)
-        startActivity(shareIntent)
-        return true
     }
 
     private fun initMenu() {

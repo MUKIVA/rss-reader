@@ -6,10 +6,8 @@ import android.view.MenuItem
 import androidx.core.view.MenuProvider
 import com.mukiva.rssreader.R
 
-typealias WatchDetailsMenuAction = () -> Boolean
-
 class WatchDetailsMenuProvider(
-    private val _shareAction: WatchDetailsMenuAction
+    private val _actions: WatchDetailsMenuActions
 ) : MenuProvider {
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.feed_item_menu, menu)
@@ -18,8 +16,9 @@ class WatchDetailsMenuProvider(
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId)
         {
-            R.id.share_option -> _shareAction()
+            R.id.share_option -> _actions.share()
+            else -> return false
         }
-        return false
+        return true
     }
 }

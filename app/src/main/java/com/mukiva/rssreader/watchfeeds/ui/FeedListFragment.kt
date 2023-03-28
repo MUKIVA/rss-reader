@@ -29,14 +29,28 @@ import com.mukiva.rssreader.watchfeeds.presentation.FeedStateType
 import com.mukiva.rssreader.watchfeeds.presentation.FeedListViewModel
 import kotlinx.coroutines.FlowPreview
 
+@OptIn(FlowPreview::class)
 class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
-    private lateinit var _binding: FragmentWatchFeedsBinding
     private val _viewModel: FeedListViewModel by viewModels { factory() }
+    private lateinit var _binding: FragmentWatchFeedsBinding
     private lateinit var _adapter: NewsListFragmentAdapter
+
     private val _menuProvider = WatchFeedsMenuProvider(
-        _aboutFeed = { aboutFeed() },
-        _addFeed = { addRssFeed() },
-        _deleteFeed = { deleteRss() }
+        object : WatchFeedsMenuProviderActions {
+
+            override fun deleteFeed() {
+                _viewModel.triggerDeleteFeed(_binding.tabLayout.selectedTabPosition)
+            }
+
+            override fun addFeed() {
+                _viewModel.triggerAddFeed()
+            }
+
+            override fun aboutFeed() {
+                _viewModel.triggerAboutFeedDialog(_binding.feedViewPager.currentItem)
+            }
+
+        }
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -135,21 +149,6 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
 
     private fun hideMenu() {
         (requireActivity() as MenuHost).removeMenuProvider(_menuProvider)
-    }
-
-    private fun deleteRss() : Boolean {
-        _viewModel.triggerDeleteFeed(_binding.tabLayout.selectedTabPosition)
-        return true
-    }
-
-    private fun addRssFeed() : Boolean {
-        _viewModel.triggerAddFeed()
-        return true
-    }
-
-    private fun aboutFeed() : Boolean {
-        _viewModel.triggerAboutFeedDialog(_binding.feedViewPager.currentItem)
-        return true
     }
 
     private fun showAboutFeedDialog(item: Feed) {
