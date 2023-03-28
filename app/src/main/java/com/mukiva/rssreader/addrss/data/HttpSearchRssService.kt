@@ -4,18 +4,51 @@ import androidx.media3.common.MimeTypes
 import com.mukiva.rssreader.addrss.domain.SearchException
 import com.mukiva.rssreader.addrss.parsing.RssParsingService
 import com.mukiva.rssreader.addrss.parsing.elements.Rss
+import com.mukiva.rssreader.okhttp.AsyncCallCallbacks
 import com.mukiva.rssreader.okhttp.BaseOkHttpSource
 import com.mukiva.rssreader.watchfeeds.domain.Feed
 import com.mukiva.rssreader.watchfeeds.domain.News
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import okhttp3.Call
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
+import okhttp3.Response
+import okio.IOException
 import java.util.*
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
-class HttpSearchRssService : BaseOkHttpSource(), SearchRssService {
+class HttpSearchRssService : BaseOkHttpSource(
+    object : AsyncCallCallbacks {
+        override fun onCancel() {
+            throw SearchException.TimeOutException()
+        }
+
+        override fun onFail(
+            call: Call,
+            e: IOException,
+            continuation: CancellableContinuation<Response>
+        ) {
+            continuation.resumeWithException(SearchException.ConnectionException(e))
+        }
+
+        override fun onSuccess(
+            call: Call,
+            response: Response,
+            continuation: CancellableContinuation<Response>
+        ) {
+            if (response.isSuccessful) {
+                continuation.resume(response)
+            } else {
+                continuation.resumeWithException(SearchException.BackendException(response.code))
+            }
+        }
+    }
+), SearchRssService {
 
     companion object {
         const val TIMEOUT: Long = 15000

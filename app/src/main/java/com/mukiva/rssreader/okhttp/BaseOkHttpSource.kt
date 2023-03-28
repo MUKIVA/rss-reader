@@ -1,17 +1,16 @@
 
 package com.mukiva.rssreader.okhttp
 
-import com.mukiva.rssreader.addrss.domain.SearchException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okio.IOException
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
-open class BaseOkHttpSource {
+open class BaseOkHttpSource(
+    private val _callbacks: AsyncCallCallbacks
+) {
 
     companion object {
         @JvmStatic
@@ -22,41 +21,18 @@ open class BaseOkHttpSource {
         return suspendCancellableCoroutine { continuation ->
 
             continuation.invokeOnCancellation {
-                cancel()
-                throw SearchException.TimeOutException()
+                _callbacks.onCancel()
             }
 
             enqueue(object: Callback {
 
                 override fun onFailure(call: Call, e: IOException) {
-                    continuation.resumeWithException(SearchException.ConnectionException(e))
+                    _callbacks.onFail(call, e, continuation)
                 }
 
                 override fun onResponse(call: Call, response: Response) {
-//                    response.use {
-                        if (response.isSuccessful) {
-                            continuation.resume(response)
-                        } else {
-                            continuation.resumeWithException(SearchException.BackendException(response.code))
-                        }
-//                    }
+                    _callbacks.onSuccess(call, response, continuation)
                 }
-
-//                override fun onFailure(call: Call, e: IOException) {
-//                    e.printStackTrace()
-//                }
-//
-//                override fun onResponse(call: Call, response: Response) {
-//                    response.use {
-//                        if (!response.isSuccessful) throw IOException("Unexpected code $response")
-//
-//                        for ((name, value) in response.headers) {
-//                            println("$name: $value")
-//                        }
-//
-//                        println(response.body!!.string())
-//                    }
-//                }
 
             })
         }

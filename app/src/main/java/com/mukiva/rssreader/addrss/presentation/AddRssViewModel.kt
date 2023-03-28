@@ -18,19 +18,6 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-enum class AddRssStateType {
-    NORMAL,
-    SEARCH,
-    SEARCH_FAIL,
-    SEARCH_SUCCESS
-}
-
-data class AddRssState (
-    val stateType: AddRssStateType,
-    val errorMessage: Int?,
-    val rssItem: Feed?
-)
-
 @FlowPreview
 class AddRssViewModel(
     private val _searchRssService: SearchRssService,
