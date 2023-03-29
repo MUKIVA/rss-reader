@@ -14,6 +14,7 @@ import androidx.core.view.MenuHost
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -28,6 +29,8 @@ import com.mukiva.rssreader.watchfeeds.presentation.FeedState
 import com.mukiva.rssreader.watchfeeds.presentation.FeedStateType
 import com.mukiva.rssreader.watchfeeds.presentation.FeedListViewModel
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @OptIn(FlowPreview::class)
 class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
@@ -88,8 +91,11 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         collectEventFlow()
     }
 
-    private fun collectEventFlow() = lifecycleScope.launchWhenResumed {
-        _viewModel.eventFlow.collect(::handleSingleEvents)
+    private fun collectEventFlow() {
+        _viewModel.eventFlow
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+            .onEach { handleSingleEvents(it) }
+            .launchIn(lifecycleScope)
     }
 
     private fun handleSingleEvents(event: FeedEvents) {
