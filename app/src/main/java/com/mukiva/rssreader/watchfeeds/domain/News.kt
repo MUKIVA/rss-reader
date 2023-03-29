@@ -6,5 +6,6 @@ data class News(
     val title: String,
     val description: String,
     val date: Date?,
-    val imageLink: String?
+    val imageLink: String?,
+    val originalLink: String
 )

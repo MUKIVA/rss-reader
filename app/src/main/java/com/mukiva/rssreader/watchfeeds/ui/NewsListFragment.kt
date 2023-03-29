@@ -3,6 +3,7 @@ package com.mukiva.rssreader.watchfeeds.ui
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -10,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.databinding.FragmentNewsListBinding
+import com.mukiva.rssreader.watchdetails.ui.NewsDetailsFragment
 import com.mukiva.rssreader.watchfeeds.di.factory
 import com.mukiva.rssreader.watchfeeds.domain.News
 import com.mukiva.rssreader.watchfeeds.presentation.NewsListState
@@ -65,7 +67,14 @@ class NewsListFragment : Fragment(R.layout.fragment_news_list) {
 
         _adapter = NewsListItemAdapter(object: FeedItemEvent {
             override fun onItemDetails(item: News) {
-                findNavController().navigate(R.id.action_watchFeedsFragment_to_watchDetailsFragment)
+                findNavController().navigate(R.id.action_watchFeedsFragment_to_watchDetailsFragment,
+                    bundleOf(
+                        NewsDetailsFragment.ARG_TITLE to item.title,
+                        NewsDetailsFragment.ARG_DESCRIPTION to item.description,
+                        NewsDetailsFragment.ARG_DATE to item.date?.time,
+                        NewsDetailsFragment.ARG_IMAGE_LINK to item.imageLink,
+                        NewsDetailsFragment.ARG_ORIGINAL_LINK to item.originalLink
+                    ))
             }
         })
     }

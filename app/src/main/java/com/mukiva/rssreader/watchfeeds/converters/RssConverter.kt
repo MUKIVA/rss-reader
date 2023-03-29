@@ -21,7 +21,8 @@ class RssConverter {
                     title = obj.title ?: FeedListViewModel.UNDEFINED_MSG,
                     description = obj.description ?: FeedListViewModel.UNDEFINED_MSG,
                     date = obj.pubDate,
-                    imageLink = imageLink
+                    imageLink = imageLink,
+                    originalLink = obj.link ?: ""
                 )
             }
         }
