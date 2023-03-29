@@ -57,8 +57,14 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
     //Glide
-    implementation 'com.github.bumptech.glide:glide:4.15.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'
+    implementation ("com.github.bumptech.glide:glide:4.15.0") {
+        exclude group: "com.android.support"
+    }
+    kapt 'androidx.annotation:annotation:1.6.0'
+    kapt 'com.github.bumptech.glide:compiler:4.15.0'
+    implementation ("com.github.bumptech.glide:glide:4.15.0@aar") {
+        transitive = true
+    }
     //Media
     implementation "androidx.media3:media3-exoplayer:1.0.0"
     //ObjectBox

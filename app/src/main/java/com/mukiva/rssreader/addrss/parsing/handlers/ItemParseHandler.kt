@@ -41,7 +41,7 @@ class ItemParseHandler(
             TAG_CATEGORY -> _category = _category!!.copy(text = trimmedText)
             TAG_SOURCE -> _itemBuilder.source = _itemBuilder.source!!.copy(text = trimmedText)
             TAG_TITLE -> _itemBuilder.title = trimmedText
-            TAG_DESCRIPTION -> _itemBuilder.description += trimmedText
+            TAG_DESCRIPTION -> _itemBuilder.description += text
             TAG_LINK -> _itemBuilder.link = trimmedText
             TAG_COMMENTS -> _itemBuilder.comments = trimmedText
             TAG_AUTHOR -> _itemBuilder.author = trimmedText
