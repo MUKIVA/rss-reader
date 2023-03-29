@@ -32,7 +32,6 @@ class NewsListViewModel(
     fun refresh(index: Int) { viewModelScope.launch {
         val entity = _rssService.getAllRss()[index]
         try {
-            modifyState { copy(stateType = NewsListStateType.LOADING) }
             val rss = _rssSearchService.search(entity.refreshLink)
             val news = _rssService.getChannelItems(_rssService.updateRss(rss, entity.id)).map {
                 RssConverter.itemEntityToNewsConverter.convert(it)
