@@ -66,7 +66,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         loadWhenResume()
     }
 
-    private fun loadWhenResume() = lifecycleScope.launchWhenResumed {
+    private fun loadWhenResume() {
         _viewModel.loadFeeds()
     }
 

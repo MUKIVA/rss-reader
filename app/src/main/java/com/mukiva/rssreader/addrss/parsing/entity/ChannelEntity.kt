@@ -10,11 +10,11 @@ import io.objectbox.relation.ToMany
 data class ChannelEntity(
     @Id
     var id: Long = 0,
-    @Unique
     val title: String = "",
     val link: String = "",
     val description: String = "",
     val imageUrl: String? = null,
+    @Unique
     val refreshLink: String
 
 ) {

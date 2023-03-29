@@ -41,7 +41,7 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
 
         _binding.searchField.setBtnListener {
             _viewModel.addRss()
-            findNavController().popBackStack()
+            findNavController().navigateUp()
         }
     }
 
