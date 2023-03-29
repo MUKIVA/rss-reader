@@ -1,5 +1,6 @@
 package com.mukiva.rssreader.watchfeeds.ui
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -10,6 +11,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.databinding.ViewNewsListItemBinding
 import com.mukiva.rssreader.watchfeeds.domain.News
+import java.text.SimpleDateFormat
+import java.util.*
 
 class NewsListItemAdapter(
     private val _actionListener: FeedItemEvent,
@@ -27,6 +30,11 @@ class NewsListItemAdapter(
             diffResult.dispatchUpdatesTo(this)
         }
 
+    companion object {
+        @SuppressLint("ConstantLocale")
+        val formatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ViewNewsListItemBinding.inflate(inflater, parent, false)
@@ -42,7 +50,7 @@ class NewsListItemAdapter(
 
             feedItemTitleText.text = item.title
             feedItemDescriptionText.text = item.description.trim()
-            feedItemDateText.text = item.date.toString()
+            feedItemDateText.text = item.date?.let { formatter.format(it) }
 
             Glide.with(holder.itemView.context)
                 .load(item.imageLink)
