@@ -9,5 +9,6 @@ sealed class SearchException : RuntimeException {
     class TimeOutException : SearchException()
     data class ConnectionException(override val cause: Throwable) : SearchException(cause)
     data class BackendException(val code: Int) : SearchException()
+    class RssAlreadyAdded : SearchException()
 }
 

@@ -54,12 +54,18 @@ class AddRssViewModel(
     }
 
     private suspend fun search(link: String) {
-
         if (link.isEmpty()) return
+        var url = link.lowercase()
+        if (!link.matches(Regex("^(https://).*$"))) url = "https://$link"
 
         try {
             modifyState { getState().copy(stateType = AddRssStateType.SEARCH) }
-            _currentRss = _searchRssService.search(link)
+            _currentRss = _searchRssService.search(url)
+
+            if  (_rssService.getAllRss().firstOrNull {
+                it.title == _currentRss.channel.title
+            } != null)
+                throw SearchException.RssAlreadyAdded()
 
             modifyState(getState().copy(
                 stateType = AddRssStateType.SEARCH_SUCCESS,
@@ -71,8 +77,16 @@ class AddRssViewModel(
                 is TimeOutException -> handleTimeoutError()
                 is ConnectionException -> handleConnectionError()
                 is BackendException -> handleBackendError()
+                is RssAlreadyAdded -> handleRssAlreadyAdded()
             }
         }
+    }
+
+    private fun handleRssAlreadyAdded() {
+        modifyState(getState().copy(
+            stateType = AddRssStateType.SEARCH_FAIL,
+            errorMessage = R.string.search_already_added_error
+        ))
     }
 
     private fun handleInvalidUrl() {
