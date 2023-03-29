@@ -26,8 +26,8 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
         observeViewModel()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         initActions()
     }
 
