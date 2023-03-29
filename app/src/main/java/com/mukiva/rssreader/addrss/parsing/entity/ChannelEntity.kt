@@ -14,7 +14,8 @@ data class ChannelEntity(
     val title: String = "",
     val link: String = "",
     val description: String = "",
-    val imageUrl: String? = null
+    val imageUrl: String? = null,
+    val refreshLink: String
 
 ) {
     @Backlink(to = "channel")

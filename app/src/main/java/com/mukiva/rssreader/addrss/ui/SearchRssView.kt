@@ -47,8 +47,7 @@ class SearchRssView
             rssItemTitleText.text = item.title
             rssItemDescriptionText.text = item.description
 
-            if (item.imageLink == null) return
-                setImage(item.imageLink)
+            item.imageLink?.let { setImage(it) }
         }
     }
 

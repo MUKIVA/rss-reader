@@ -55,7 +55,7 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
 
     private fun render(state: AddRssState) {
         _binding.searchField.errorMessageText = state.errorMessage?.let { getString(it) }.toString()
-        _binding.searchField.setRssItem(state.rssItem)
+        state.rssItem?.let { _binding.searchField.setRssItem(it) }
         when(state.stateType) {
             AddRssStateType.NORMAL -> renderNormalState()
             AddRssStateType.SEARCH -> renderSearchState()

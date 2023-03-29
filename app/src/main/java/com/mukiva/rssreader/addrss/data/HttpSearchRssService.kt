@@ -57,7 +57,7 @@ class HttpSearchRssService : BaseOkHttpSource(
             .build()
 
         try {
-            return getAndParseRss(request)
+            return getAndParseRss(request).copy(refreshLink = link)
         } catch (e: Exception)  {
             throw SearchException.InvalidUrlException()
         }

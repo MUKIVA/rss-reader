@@ -18,8 +18,7 @@ class NewsListViewModel(
         news = listOf()
     )
 ) {
-
-    fun loadData(index: Int) = viewModelScope.launch {
+    fun loadData(index: Int) { viewModelScope.launch {
         val rss = _rssService.getAllRss()[index]
         val news = _rssService.getChannelItems(rss).map {
             RssConverter.itemEntityToNewsConverter.convert(it)
@@ -28,13 +27,13 @@ class NewsListViewModel(
             stateType = getStateType(news),
             news = news
         ))
-    }
+    } }
 
-    fun refresh(index: Int) = viewModelScope.launch {
+    fun refresh(index: Int) { viewModelScope.launch {
         val entity = _rssService.getAllRss()[index]
         try {
             modifyState { copy(stateType = NewsListStateType.LOADING) }
-            val rss = _rssSearchService.search(entity.link)
+            val rss = _rssSearchService.search(entity.refreshLink)
             val news = _rssService.getChannelItems(_rssService.updateRss(rss, entity.id)).map {
                 RssConverter.itemEntityToNewsConverter.convert(it)
             }
@@ -43,7 +42,7 @@ class NewsListViewModel(
         } catch (e: Exception) {
             modifyState { NewsListState(NewsListStateType.FAIL, mutableListOf()) }
         }
-    }
+    } }
 
     private fun getStateType(news: List<News>): NewsListStateType {
         return when (news.size) {

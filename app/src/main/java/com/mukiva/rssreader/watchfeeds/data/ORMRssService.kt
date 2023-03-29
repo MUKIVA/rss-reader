@@ -29,7 +29,7 @@ class ORMRssService(
     }
 
     override suspend fun addRss(rss: Rss): List<ChannelEntity> {
-        val entity = createChannel(rss.channel)
+        val entity = createChannel(rss)
         rss.channel.items.forEach { entity.items.add(createItemEntity(it)) }
         _channelBox.put(entity)
         return getAllRss()
@@ -43,12 +43,13 @@ class ORMRssService(
         return _channelBox[rss.id].items.toList()
     }
 
-    private fun createChannel(channel: Channel): ChannelEntity {
+    private fun createChannel(rss: Rss): ChannelEntity {
         return ChannelEntity(
-            title = channel.title,
-            link = channel.link,
-            description = channel.description,
-            imageUrl = channel.image?.url,
+            title = rss.channel.title,
+            link = rss.channel.link,
+            description = rss.channel.description,
+            imageUrl = rss.channel.image?.url,
+            refreshLink = rss.refreshLink
         )
     }
 

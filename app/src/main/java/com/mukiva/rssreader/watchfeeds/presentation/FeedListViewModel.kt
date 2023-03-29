@@ -42,7 +42,7 @@ class FeedListViewModel(
         handleTriggerAboutFeedDialog(index)
     }
 
-    fun deleteFeed(index: Int) = viewModelScope.launch {
+    fun deleteFeed(index: Int) { viewModelScope.launch {
         val ent = _rssService.getAllRss()[index]
         modifyState(getState().copy(stateType = FeedStateType.LOADING))
         val feeds = _rssService.deleteRss(ent).map { createFeed(it) }
@@ -50,16 +50,16 @@ class FeedListViewModel(
             stateType = getFeedStateType(feeds),
             feeds = feeds
         ))
-    }
+    } }
 
-    fun loadFeeds() = viewModelScope.launch {
+    fun loadFeeds() { viewModelScope.launch {
         modifyState(getState().copy(stateType = FeedStateType.LOADING))
         val feeds = _rssService.getAllRss().map { createFeed(it) }
         modifyState(FeedState(
             stateType = getFeedStateType(feeds),
             feeds = feeds
         ))
-    }
+    } }
 
     private fun getFeedStateType(feeds: List<Feed>): FeedStateType {
         return if (feeds.isEmpty()) FeedStateType.EMPTY else FeedStateType.NORMAL
