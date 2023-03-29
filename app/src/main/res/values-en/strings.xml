@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RSS Reader</string>
+    <string name="add_rss_button_text">Add</string>
+    <string name="loading_text">Please, wait…</string>
+    <string name="update">Update</string>
+    <string name="details_open_original">Open original</string>
+    <string name="add_first_rss_text">You don\'t have RSS feeds yet\nPaste link to add</string>
+    <string name="search_rss_hint">Enter URL</string>
+    <string name="search_error_parse">Make sure the link is an RSS-feed</string>
+    <string name="search_error_network">Internet connection error</string>
+    <string name="empty_rss_feed">No news in the feed yet</string>
+    <string name="fail_get_data_text">An error occurred when receiving the data</string>
+    <string name="repeat">Repeat</string>
+    <string name="share">Share</string>
+    <string name="menu_about_feed">about feed</string>
+    <string name="menu_add_feed">add feed</string>
+    <string name="menu_delete_feed">delete the rss feed</string>
+    <string name="max_feeds_count_msg">added maximum number of rss feeds</string>
+    <string name="delete_alert_dialog_positive">Delete</string>
+    <string name="delete_alert_dialog_negative">Cancel</string>
+    <string name="delete_alert_dialog_message">Do you really want to delete %1$s?</string>
+    <string name="search_time_out_error">Exceeded waiting time</string>
+    <string name="search_already_added_error">Rss feed already added</string>
+</resources>

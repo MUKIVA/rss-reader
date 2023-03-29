@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">RSS Reader</string>
     <string name="add_rss_button_text">Добавить</string>
-    <string name="mock_description">Description</string>
+    <string name="mock_description" translatable="false">Description</string>
     <string name="loading_text">Пожалуйста, подождите…</string>
     <string name="update">Обновить</string>
-    <string name="details_mock_title">Гейб Ньюэлл: Мы много раз брались за Half-Life 3 и всегда заходили в тупик</string>
-    <string name="mock_date">10 декабря 2023</string>
+    <string name="details_mock_title" translatable="false">Гейб Ньюэлл: Мы много раз брались за Half-Life 3 и всегда заходили в тупик</string>
+    <string name="mock_date" translatable="false">10 декабря 2023</string>
 
 
-    <string name="details_mock_content">
+    <string name="details_mock_content" translatable="false">
         По словам Ньюэлла, Valve «не станет выпускать что-то, лишь бы выпустить что-то». Но для Half-Life благодаря «Аликс» сейчас достаточно светлое будущее: команда проекта мотивирована желанием сделать новую Half-Life.
 
         Сейчас, правда, этому мешает глобальная пандемия. По прикидкам главы Valve, продуктивность команды в дистанционном производстве упала на 50-75%, из-за чего Ньюэлл всерьёз обдумывает возможность как минимум временно перевести сотрудников в Новую Зеландию.
@@ -22,7 +22,7 @@
     <string name="search_rss_hint">Введите URL</string>
     <string name="search_error_parse">Проверьте, что указанная ссылка является RSS-лентой</string>
     <string name="search_error_network">Ошибка соединения с интернетом</string>
-    <string name="mock_title">Title</string>
+    <string name="mock_title" translatable="false">Title</string>
     <string name="empty_rss_feed">В ленте еще нет новостей</string>
     <string name="fail_get_data_text">При получении данных возникла ошибка</string>
     <string name="repeat">Повторить</string>

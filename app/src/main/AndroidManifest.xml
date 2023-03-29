@@ -18,6 +18,7 @@
         android:name=".App">
         <activity
             android:name=".MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true"
             android:theme="@style/Theme.RSSReader.NoActionBar">
             <intent-filter>
