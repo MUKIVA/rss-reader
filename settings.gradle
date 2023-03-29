@@ -1,4 +1,5 @@
 pluginManagement {
+
     repositories {
         google()
         mavenCentral()
@@ -12,5 +13,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
 rootProject.name = "RSS Reader"
 include ':app'

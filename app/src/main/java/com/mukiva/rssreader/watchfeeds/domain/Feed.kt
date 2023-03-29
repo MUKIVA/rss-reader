@@ -4,6 +4,6 @@ data class Feed(
     val title: String,
     val description: String,
     val newsRepoLink: String,
-    val imageLink: String,
+    val imageLink: String?,
     val news: List<News>
 )

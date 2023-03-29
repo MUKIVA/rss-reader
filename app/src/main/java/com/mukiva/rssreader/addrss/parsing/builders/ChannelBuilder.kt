@@ -28,26 +28,26 @@ class ChannelBuilder {
 
     fun build(): Channel {
         return Channel(
-            title ?: throw IllegalStateException(),
-            link ?: throw IllegalStateException(),
-            description ?: throw IllegalStateException(),
-            language,
-            copyright,
-            managingEditor,
-            webMaster,
-            pubDate,
-            lastBuildDate,
-            _category,
-            generator,
-            docs,
-            cloud,
-            ttl,
-            image,
-            rating,
-            textInput,
-            skipHours,
-            skipDays,
-            _items
+            title = title ?: throw IllegalStateException(),
+            link = link ?: throw IllegalStateException(),
+            description = description ?: throw IllegalStateException(),
+            language = language,
+            copyright = copyright,
+            managingEditor = managingEditor,
+            webMaster = webMaster,
+            pubDate = pubDate,
+            lastBuildDate = lastBuildDate,
+            category = _category,
+            generator = generator,
+            docs = docs,
+            cloud = cloud,
+            ttl = ttl,
+            image = image,
+            rating = rating,
+            textInput = textInput,
+            skipDays = skipHours,
+            skipHours = skipDays,
+            items = _items
         )
     }
 

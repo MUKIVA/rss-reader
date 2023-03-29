@@ -22,16 +22,16 @@ class ItemBuilder {
             throw IllegalStateException()
 
         return Item(
-            guid,
-            title,
-            description,
-            link,
-            pubDate,
-            enclosure,
-            author,
-            _category,
-            comments,
-            source
+            guid =  guid,
+            title =  title,
+            description = description,
+            link = link,
+            pubDate = pubDate,
+            enclosure = enclosure,
+            author = author,
+            category = _category,
+            comments = comments,
+            source = source
         )
     }
 

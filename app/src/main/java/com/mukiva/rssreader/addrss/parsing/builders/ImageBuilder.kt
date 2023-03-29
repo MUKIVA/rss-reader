@@ -12,12 +12,12 @@ class ImageBuilder {
 
     fun build(): Image {
         return Image(
-            url ?: throw IllegalStateException(),
-            title ?: throw IllegalStateException(),
-            link ?: throw IllegalStateException(),
-            width,
-            height,
-            description
+            url = url ?: throw IllegalStateException(),
+            title = title ?: throw IllegalStateException(),
+            link = link ?: throw IllegalStateException(),
+            width = width,
+            height = height,
+            description = description
         )
     }
 }

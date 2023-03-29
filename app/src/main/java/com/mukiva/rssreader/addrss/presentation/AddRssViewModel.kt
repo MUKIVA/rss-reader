@@ -1,17 +1,14 @@
 package com.mukiva.rssreader.addrss.presentation
 
-import android.os.CountDownTimer
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.addrss.data.SearchRssService
+import com.mukiva.rssreader.addrss.domain.Feed
 import com.mukiva.rssreader.addrss.domain.SearchException
 import com.mukiva.rssreader.addrss.domain.SearchException.*
+import com.mukiva.rssreader.addrss.parsing.elements.Rss
 import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
-import com.mukiva.rssreader.watchfeeds.data.FeedsService
-import com.mukiva.rssreader.watchfeeds.domain.Feed
+import com.mukiva.rssreader.watchfeeds.data.RssService
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.debounce
@@ -21,7 +18,7 @@ import kotlinx.coroutines.flow.onEach
 @FlowPreview
 class AddRssViewModel(
     private val _searchRssService: SearchRssService,
-    private val _feedsService: FeedsService
+    private val _rssService: RssService
 ) : SingleStateViewModel<AddRssState>(
     AddRssState(
         stateType = AddRssStateType.NORMAL,
@@ -29,8 +26,8 @@ class AddRssViewModel(
         rssItem = null
     )
 ) {
-
     private val _searchDebounce = MutableSharedFlow<String>()
+    private var _currentRss: Rss = Rss()
 
     companion object {
         private const val TIME_TO_SEARCH: Long = 1000
@@ -48,8 +45,12 @@ class AddRssViewModel(
         handleTriggerSearch(text)
     }
 
-    fun addRss() = viewModelScope.launch {
-        _feedsService.addFeed(getState().rssItem!!)
+    fun addRss() {
+        handleAddRss()
+    }
+
+    private fun handleAddRss() = viewModelScope.launch {
+        _rssService.addRss(_currentRss)
     }
 
     private suspend fun search(link: String) {
@@ -58,10 +59,11 @@ class AddRssViewModel(
 
         try {
             modifyState { getState().copy(stateType = AddRssStateType.SEARCH) }
-            val feed = _searchRssService.search(link)
+            _currentRss = _searchRssService.search(link)
+
             modifyState(getState().copy(
                 stateType = AddRssStateType.SEARCH_SUCCESS,
-                rssItem = feed
+                rssItem = ConverRssToFeed(_currentRss)
             ))
         } catch (e: SearchException) {
             when (e) {
@@ -103,5 +105,13 @@ class AddRssViewModel(
 
     private fun handleTriggerSearch(text: String) = viewModelScope.launch {
         _searchDebounce.emit(text)
+    }
+
+    private fun ConverRssToFeed(rss: Rss): Feed {
+        return Feed(
+            title = rss.channel.title,
+            description = rss.channel.description,
+            imageLink = rss.channel.image?.url
+        )
     }
 }

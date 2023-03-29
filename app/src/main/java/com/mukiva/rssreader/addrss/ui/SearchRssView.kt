@@ -8,8 +8,8 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.bumptech.glide.Glide
 import com.mukiva.rssreader.R
+import com.mukiva.rssreader.addrss.domain.Feed
 import com.mukiva.rssreader.databinding.ViewSearchRssBinding
-import com.mukiva.rssreader.watchfeeds.domain.Feed
 
 class SearchRssView
 @JvmOverloads constructor (
@@ -42,12 +42,12 @@ class SearchRssView
         typedArray.recycle()
     }
 
-    fun setRssItem(item: Feed?) {
+    fun setRssItem(item: Feed) {
         with (_binding) {
-            rssItemTitleText.text = item?.title ?: "Undefined"
-            rssItemDescriptionText.text = item?.description ?: "Undefined"
+            rssItemTitleText.text = item.title
+            rssItemDescriptionText.text = item.description
 
-            if (item == null) return
+            if (item.imageLink == null) return
                 setImage(item.imageLink)
         }
     }

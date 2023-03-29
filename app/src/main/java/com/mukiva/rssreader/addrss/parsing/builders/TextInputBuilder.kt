@@ -10,10 +10,10 @@ class TextInputBuilder {
 
     fun build(): TextInput {
         return TextInput(
-            title,
-            description,
-            name,
-            link
+            title =  title,
+            description =  description,
+            name =  name,
+            link =  link
         )
     }
 }
