@@ -1,22 +1,32 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.RSSReader" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
+<resources>
+
+    <style name="Base.V21.Theme.RSSReader" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+<!--         Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondary">@color/purple_500</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        <item name="materialButtonStyle">@style/Widget.RSSReader.Button</item>
+        <item name="bottomSheetDialogTheme">@style/Theme.RSSReader.BottomSheetOverlay</item>
     </style>
+
+    <style name="Base.Theme.RSSReader" parent="Base.V21.Theme.RSSReader" />
+
+    <style name="Theme.RSSReader" parent="Base.Theme.RSSReader" />
 
     <style name="Theme.RSSReader.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="Theme.RSSReader.BottomSheetOverlay" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.RSSReader.BottomSheet.Modal</item>
     </style>
 
     <style name="Theme.RSSReader.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

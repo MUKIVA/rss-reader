@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(_binding.root)
 
         setupActionBar()
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

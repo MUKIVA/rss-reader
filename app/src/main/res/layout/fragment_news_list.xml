@@ -25,6 +25,6 @@
         layout="@layout/fragment_news_list_unloaded_state"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible" />
+        tools:visibility="gone" />
 
 </FrameLayout>

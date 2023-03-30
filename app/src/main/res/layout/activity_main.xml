@@ -12,9 +12,13 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:stateListAnimator="@animator/appbar_elevation"
+        app:liftOnScroll="false"
+        android:elevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        style="@style/Widget.MaterialComponents.AppBarLayout.Surface"
         android:visibility="visible">
 
         <com.google.android.material.appbar.MaterialToolbar
