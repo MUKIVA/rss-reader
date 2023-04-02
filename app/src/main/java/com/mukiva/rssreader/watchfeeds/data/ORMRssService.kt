@@ -1,7 +1,8 @@
 package com.mukiva.rssreader.watchfeeds.data
 
-import com.mukiva.rssreader.addrss.parsing.entity.*
-import com.mukiva.rssreader.addrss.parsing.elements.*
+import com.mukiva.rssreader.addrss.data.parsing.elements.*
+import com.mukiva.rssreader.addrss.data.parsing.entity.ChannelEntity
+import com.mukiva.rssreader.addrss.data.parsing.entity.ItemEntity
 import io.objectbox.BoxStore
 
 class ORMRssService(

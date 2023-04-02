@@ -1,8 +1,8 @@
 package com.mukiva.rssreader.watchfeeds.data
 
-import com.mukiva.rssreader.addrss.parsing.elements.Rss
-import com.mukiva.rssreader.addrss.parsing.entity.ChannelEntity
-import com.mukiva.rssreader.addrss.parsing.entity.ItemEntity
+import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
+import com.mukiva.rssreader.addrss.data.parsing.entity.ChannelEntity
+import com.mukiva.rssreader.addrss.data.parsing.entity.ItemEntity
 
 interface RssService {
     suspend fun updateRss(rss: Rss, id: Long): ChannelEntity

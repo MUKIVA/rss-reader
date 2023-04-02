@@ -2,7 +2,7 @@ package com.mukiva.rssreader.watchfeeds.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.mukiva.rssreader.R
-import com.mukiva.rssreader.addrss.parsing.entity.ChannelEntity
+import com.mukiva.rssreader.addrss.data.parsing.entity.ChannelEntity
 import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
 import com.mukiva.rssreader.watchfeeds.converters.RssConverter
 import com.mukiva.rssreader.watchfeeds.data.RssService

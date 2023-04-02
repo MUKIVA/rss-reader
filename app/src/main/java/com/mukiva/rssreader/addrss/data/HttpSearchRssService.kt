@@ -1,8 +1,7 @@
 package com.mukiva.rssreader.addrss.data
 
 import com.mukiva.rssreader.addrss.domain.SearchException
-import com.mukiva.rssreader.addrss.parsing.RssParsingService
-import com.mukiva.rssreader.addrss.parsing.elements.Rss
+import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
 import com.mukiva.rssreader.okhttp.AsyncCallCallbacks
 import com.mukiva.rssreader.okhttp.BaseOkHttpSource
 import kotlinx.coroutines.CancellableContinuation
@@ -70,7 +69,7 @@ class HttpSearchRssService : BaseOkHttpSource(
     private suspend fun getAndParseRss(request: Request): Rss = withTimeout(TIMEOUT) {
         return@withTimeout withContext(Dispatchers.IO) {
             val response = client.newCall(request).suspendEnqueue()
-            RssParsingService().parse(response.body!!.byteStream())
+            com.mukiva.rssreader.addrss.data.parsing.RssParsingService().parse(response.body!!.byteStream())
         }
     }
 

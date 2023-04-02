@@ -6,7 +6,7 @@ import com.mukiva.rssreader.addrss.data.SearchRssService
 import com.mukiva.rssreader.addrss.domain.Feed
 import com.mukiva.rssreader.addrss.domain.SearchException
 import com.mukiva.rssreader.addrss.domain.SearchException.*
-import com.mukiva.rssreader.addrss.parsing.elements.Rss
+import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
 import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
 import com.mukiva.rssreader.watchfeeds.data.RssService
 import kotlinx.coroutines.*

@@ -1,7 +1,7 @@
 package com.mukiva.rssreader.watchfeeds.converters
 
 import androidx.media3.common.MimeTypes
-import com.mukiva.rssreader.addrss.parsing.entity.ItemEntity
+import com.mukiva.rssreader.addrss.data.parsing.entity.ItemEntity
 import com.mukiva.rssreader.watchfeeds.domain.News
 import com.mukiva.rssreader.watchfeeds.presentation.FeedListViewModel
 
