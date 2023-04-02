@@ -3,10 +3,9 @@ package com.mukiva.rssreader.addrss.presentation
 import androidx.lifecycle.viewModelScope
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.addrss.data.SearchRssService
-import com.mukiva.rssreader.addrss.domain.Feed
-import com.mukiva.rssreader.addrss.domain.SearchException
-import com.mukiva.rssreader.addrss.domain.SearchException.*
 import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
+import com.mukiva.rssreader.addrss.domain.*
+import com.mukiva.rssreader.addrss.domain.UnknownError
 import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
 import com.mukiva.rssreader.watchfeeds.data.RssService
 import kotlinx.coroutines.*
@@ -19,7 +18,7 @@ import kotlinx.coroutines.flow.onEach
 class AddRssViewModel(
     private val _searchRssService: SearchRssService,
     private val _rssService: RssService
-) : SingleStateViewModel<AddRssState>(
+) : SingleStateViewModel<AddRssState, Nothing>(
     AddRssState(
         stateType = AddRssStateType.NORMAL,
         errorMessage = null,
@@ -46,40 +45,40 @@ class AddRssViewModel(
     }
 
     fun addRss() {
-        handleAddRss()
-    }
-
-    private fun handleAddRss() = viewModelScope.launch {
-        _rssService.addRss(_currentRss)
+        viewModelScope.launch {
+            _rssService.addRss(_currentRss)
+        }
     }
 
     private suspend fun search(link: String) {
         if (link.isEmpty()) return
         var url = link.lowercase()
         if (!link.matches(Regex("^(https://).*$"))) url = "https://$link"
+        modifyState { getState().copy(stateType = AddRssStateType.SEARCH) }
 
-        try {
-            modifyState { getState().copy(stateType = AddRssStateType.SEARCH) }
-            _currentRss = _searchRssService.search(url)
+        val newRss = _searchRssService.search(url)
 
-            if  (_rssService.getAllRss().firstOrNull {
-                it.title == _currentRss.channel.title
-            } != null)
-                throw SearchException.RssAlreadyAdded()
-
-            modifyState(getState().copy(
-                stateType = AddRssStateType.SEARCH_SUCCESS,
-                rssItem = ConverRssToFeed(_currentRss)
-            ))
-        } catch (e: SearchException) {
-            when (e) {
-                is InvalidUrlException -> handleInvalidUrl()
-                is TimeOutException -> handleTimeoutError()
-                is ConnectionException -> handleConnectionError()
-                is BackendException -> handleBackendError()
-                is RssAlreadyAdded -> handleRssAlreadyAdded()
-            }
+        when (newRss) {
+            is Success<Rss> -> handleSuccessSearch(newRss.data, url)
+            is Error -> handleErrorSearch(newRss.error)
         }
+    }
+
+    private fun handleErrorSearch(err: SearchError) {
+        when (err) {
+            ConnectionError -> handleConnectionError()
+            InvalidUrlError -> handleInvalidUrl()
+            TimeoutError -> handleTimeoutError()
+            UnknownError -> handleUnknownError()
+        }
+    }
+
+    private fun handleSuccessSearch(rss: Rss, refreshLink: String) {
+        _currentRss = rss.copy(refreshLink = refreshLink)
+        modifyState(getState().copy(
+            stateType = AddRssStateType.SEARCH_SUCCESS,
+            rssItem = ConverRssToFeed(_currentRss)
+        ))
     }
 
     private fun handleRssAlreadyAdded() {
@@ -110,7 +109,7 @@ class AddRssViewModel(
         ))
     }
 
-    private fun handleBackendError() {
+    private fun handleUnknownError() {
         modifyState(getState().copy(
             stateType = AddRssStateType.SEARCH_FAIL,
             errorMessage = R.string.search_error_parse

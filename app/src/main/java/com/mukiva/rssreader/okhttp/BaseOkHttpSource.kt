@@ -14,14 +14,16 @@ open class BaseOkHttpSource(
 
     companion object {
         @JvmStatic
-        protected val client: OkHttpClient = OkHttpClient()
+        protected val client: OkHttpClient = OkHttpClient.Builder()
+            .cache(null)
+            .build()
     }
 
     suspend fun Call.suspendEnqueue(): Response {
         return suspendCancellableCoroutine { continuation ->
 
             continuation.invokeOnCancellation {
-                _callbacks.onCancel()
+                _callbacks.onCancel(continuation)
             }
 
             enqueue(object: Callback {
@@ -35,6 +37,7 @@ open class BaseOkHttpSource(
                 }
 
             })
+
         }
     }
 }

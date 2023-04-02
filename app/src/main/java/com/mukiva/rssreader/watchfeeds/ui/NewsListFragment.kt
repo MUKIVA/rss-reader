@@ -3,9 +3,11 @@ package com.mukiva.rssreader.watchfeeds.ui
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,9 +16,12 @@ import com.mukiva.rssreader.databinding.FragmentNewsListBinding
 import com.mukiva.rssreader.watchdetails.ui.NewsDetailsFragment
 import com.mukiva.rssreader.watchfeeds.di.factory
 import com.mukiva.rssreader.watchfeeds.domain.News
+import com.mukiva.rssreader.watchfeeds.presentation.NewsListEvents
 import com.mukiva.rssreader.watchfeeds.presentation.NewsListState
 import com.mukiva.rssreader.watchfeeds.presentation.NewsListViewModel
 import com.mukiva.rssreader.watchfeeds.presentation.NewsListStateType
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class NewsListFragment : Fragment(R.layout.fragment_news_list) {
 
@@ -81,6 +86,24 @@ class NewsListFragment : Fragment(R.layout.fragment_news_list) {
 
     private fun observeViewModel() {
         _viewModel.state.observe(viewLifecycleOwner, ::render)
+        collectEvent()
+    }
+
+    private fun collectEvent() {
+        _viewModel.event
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+            .onEach { handleEvents(it) }
+            .launchIn(lifecycleScope)
+    }
+
+    private fun handleEvents(evt: NewsListEvents) {
+        when (evt) {
+            is NewsListEvents.RefreshErrorEvent -> sendToast(evt.msgId)
+        }
+    }
+
+    private fun sendToast(textId: Int) {
+        Toast.makeText(requireContext(), textId, Toast.LENGTH_LONG).show()
     }
 
     private fun initRecyclerView() {

@@ -1,15 +1,12 @@
 package com.mukiva.rssreader.addrss.data
 
-import com.mukiva.rssreader.addrss.domain.SearchException
+import com.mukiva.rssreader.addrss.data.parsing.RssParsingService
 import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
+import com.mukiva.rssreader.addrss.domain.*
 import com.mukiva.rssreader.okhttp.AsyncCallCallbacks
 import com.mukiva.rssreader.okhttp.BaseOkHttpSource
-import kotlinx.coroutines.CancellableContinuation
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.*
 import okhttp3.Call
-import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
 import okhttp3.Response
@@ -19,8 +16,8 @@ import kotlin.coroutines.resumeWithException
 
 class HttpSearchRssService : BaseOkHttpSource(
     object : AsyncCallCallbacks {
-        override fun onCancel() {
-            throw SearchException.TimeOutException()
+        override fun onCancel(continuation: CancellableContinuation<Response>) {
+            continuation.cancel()
         }
 
         override fun onFail(
@@ -28,7 +25,7 @@ class HttpSearchRssService : BaseOkHttpSource(
             e: IOException,
             continuation: CancellableContinuation<Response>
         ) {
-            continuation.resumeWithException(SearchException.ConnectionException(e))
+            continuation.resumeWithException(e)
         }
 
         override fun onSuccess(
@@ -36,41 +33,50 @@ class HttpSearchRssService : BaseOkHttpSource(
             response: Response,
             continuation: CancellableContinuation<Response>
         ) {
-            if (response.isSuccessful) {
-                continuation.resume(response)
-            } else {
-                continuation.resumeWithException(SearchException.BackendException(response.code))
-            }
+            continuation.resume(response)
         }
     }
 ), SearchRssService {
+
+    private val _rssParser = RssParsingService()
 
     companion object {
         const val TIMEOUT: Long = 15000
     }
 
-    override suspend fun search(link: String): Rss {
-        val url = validateUrl(link)
+    override suspend fun search(link: String): Result<Rss> {
+
+        if (!validateUrl(link)) return Error(InvalidUrlError)
+
         val request = Request.Builder()
-            .url(url)
+            .url(link)
             .build()
 
         try {
-            return getAndParseRss(request).copy(refreshLink = link)
-        } catch (e: Exception)  {
-            throw SearchException.InvalidUrlException()
+
+            return withTimeout(TIMEOUT) {
+
+                val response = client.newCall(request).suspendEnqueue()
+
+                if (!response.isSuccessful) return@withTimeout Error(UnknownError)
+
+                return@withTimeout withContext(Dispatchers.IO) {
+                    val rss: Rss = _rssParser.parse(response.body!!.byteStream())
+                    Success<Rss>(rss)
+                }
+            }
+
+        } catch (e: Exception) {
+            return when (e) {
+                is TimeoutCancellationException -> Error(TimeoutError)
+                is IOException -> Error(ConnectionError)
+                else -> Error(UnknownError)
+            }
         }
+
     }
 
-    private fun validateUrl(url: String): HttpUrl {
-        return url.toHttpUrlOrNull() ?: throw SearchException.InvalidUrlException()
+    private fun validateUrl(url: String): Boolean {
+        return url.toHttpUrlOrNull() != null
     }
-
-    private suspend fun getAndParseRss(request: Request): Rss = withTimeout(TIMEOUT) {
-        return@withTimeout withContext(Dispatchers.IO) {
-            val response = client.newCall(request).suspendEnqueue()
-            com.mukiva.rssreader.addrss.data.parsing.RssParsingService().parse(response.body!!.byteStream())
-        }
-    }
-
 }

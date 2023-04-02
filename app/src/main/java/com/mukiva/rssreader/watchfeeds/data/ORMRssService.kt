@@ -14,6 +14,7 @@ class ORMRssService(
     override suspend fun updateRss(rss: Rss, id: Long): ChannelEntity {
         val entity = _channelBox[id]
         entity.items.clear()
+        entity.items.applyChangesToDb()
         rss.channel.items.forEach { entity.items.add(createItemEntity(it)) }
         _channelBox.put(entity.copy(
             title = rss.channel.title,
@@ -21,6 +22,7 @@ class ORMRssService(
             description = rss.channel.description,
             imageUrl = rss.channel.image?.url
         ))
+        entity.items.applyChangesToDb()
         return _channelBox[id]
     }
 

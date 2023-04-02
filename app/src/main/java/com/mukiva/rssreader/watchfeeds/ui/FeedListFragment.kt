@@ -92,7 +92,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
     }
 
     private fun collectEventFlow() {
-        _viewModel.eventFlow
+        _viewModel.event
             .flowWithLifecycle(viewLifecycleOwner.lifecycle)
             .onEach { handleSingleEvents(it) }
             .launchIn(lifecycleScope)

@@ -7,20 +7,18 @@ import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
 import com.mukiva.rssreader.watchfeeds.converters.RssConverter
 import com.mukiva.rssreader.watchfeeds.data.RssService
 import com.mukiva.rssreader.watchfeeds.domain.Feed
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
 class FeedListViewModel(
     private val _rssService: RssService,
-) : SingleStateViewModel<FeedState>(
+) : SingleStateViewModel<FeedState, FeedEvents>(
     FeedState(
         stateType = FeedStateType.LOADING,
         feeds = listOf()
     )
 ) {
-    val eventFlow: SharedFlow<FeedEvents> by lazy { _eventFlow }
-    private val _eventFlow = MutableSharedFlow<FeedEvents>()
+    private val converter = RssConverter()
+
     companion object {
         const val MAX_PAGE_COUNT = 10
         const val UNDEFINED_MSG = "Undefined"
@@ -67,18 +65,18 @@ class FeedListViewModel(
 
     private fun handleTriggerDeleteFeed(index: Int) = viewModelScope.launch {
         val item = getState().feeds[index]
-        _eventFlow.emit(FeedEvents.DeleteRssEvent(item))
+        event(FeedEvents.DeleteRssEvent(item))
     }
 
     private fun handleTriggerAddFeed() = viewModelScope.launch {
         if (getState().feeds.size >= MAX_PAGE_COUNT)
-            _eventFlow.emit(FeedEvents.ShowToastEvent(R.string.max_feeds_count_msg))
+            event(FeedEvents.ShowToastEvent(R.string.max_feeds_count_msg))
         else
-            _eventFlow.emit(FeedEvents.AddRssEvent)
+            event(FeedEvents.AddRssEvent)
     }
 
     private fun handleTriggerAboutFeedDialog(index: Int) = viewModelScope.launch {
-        _eventFlow.emit(FeedEvents.ShowFeedDetails(getState().feeds[index]))
+        event(FeedEvents.ShowFeedDetails(getState().feeds[index]))
     }
 
     private suspend fun createFeed(channelEntity: ChannelEntity): Feed {
@@ -88,7 +86,7 @@ class FeedListViewModel(
                newsRepoLink = channelEntity.link,
                imageLink = channelEntity.imageUrl,
                news = _rssService.getChannelItems(channelEntity).map {
-                   RssConverter.itemEntityToNewsConverter.convert(it)
+                   converter.entityToNews(it)
                }
            )
     }
