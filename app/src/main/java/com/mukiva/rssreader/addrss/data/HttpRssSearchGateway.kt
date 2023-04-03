@@ -2,19 +2,17 @@ package com.mukiva.rssreader.addrss.data
 
 import com.mukiva.rssreader.addrss.data.parsing.RssParsingService
 import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
-import com.mukiva.rssreader.addrss.domain.*
 import com.mukiva.rssreader.okhttp.AsyncCallCallbacks
 import com.mukiva.rssreader.okhttp.BaseOkHttpSource
 import kotlinx.coroutines.*
 import okhttp3.Call
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class HttpSearchRssGateway : BaseOkHttpSource(
+class HttpRssSearchGateway : BaseOkHttpSource(
     object : AsyncCallCallbacks {
         override fun onCancel(continuation: CancellableContinuation<Response>) {
             continuation.cancel()
@@ -36,7 +34,7 @@ class HttpSearchRssGateway : BaseOkHttpSource(
             continuation.resume(response)
         }
     }
-), SearchRssGateway {
+), RssSearchGateway {
 
     private val _rssParser = RssParsingService()
 
@@ -44,39 +42,23 @@ class HttpSearchRssGateway : BaseOkHttpSource(
         const val TIMEOUT: Long = 15000
     }
 
-    override suspend fun search(link: String): Result<Rss> {
-
-        if (!validateUrl(link)) return Error(InvalidUrlError)
+    override suspend fun search(link: String): Rss {
 
         val request = Request.Builder()
             .url(link)
             .build()
 
-        try {
+        return withTimeout(TIMEOUT) {
 
-            return withTimeout(TIMEOUT) {
+            val response = client.newCall(request).suspendEnqueue()
 
-                val response = client.newCall(request).suspendEnqueue()
+            if (!response.isSuccessful)
+                throw Exception("Unknown error")
 
-                if (!response.isSuccessful) return@withTimeout Error(UnknownError)
-
-                return@withTimeout withContext(Dispatchers.IO) {
-                    val rss: Rss = _rssParser.parse(response.body!!.byteStream()).copy(refreshLink = link)
-                    Success<Rss>(rss)
-                }
-            }
-
-        } catch (e: Exception) {
-            return when (e) {
-                is TimeoutCancellationException -> Error(TimeoutError)
-                is IOException -> Error(ConnectionError)
-                else -> Error(UnknownError)
+            return@withTimeout withContext(Dispatchers.IO) {
+                val rss: Rss = _rssParser.parse(response.body!!.byteStream()).copy(refreshLink = link)
+                rss
             }
         }
-
-    }
-
-    private fun validateUrl(url: String): Boolean {
-        return url.toHttpUrlOrNull() != null
     }
 }

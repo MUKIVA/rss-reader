@@ -2,7 +2,7 @@ package com.mukiva.rssreader.addrss.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.mukiva.rssreader.R
-import com.mukiva.rssreader.addrss.data.SearchRssGateway
+import com.mukiva.rssreader.addrss.data.RssSearchGateway
 import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
 import com.mukiva.rssreader.addrss.domain.*
 import com.mukiva.rssreader.addrss.domain.UnknownError
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.onEach
 
 @FlowPreview
 class AddRssViewModel(
-    private val _searchRssGateway: SearchRssGateway,
+    private val _searchGateway: RssSearchGateway,
     private val _rssStorage: RssStorage
 ) : SingleStateViewModel<AddRssState, Nothing>(
     AddRssState(
@@ -41,7 +41,9 @@ class AddRssViewModel(
     }
 
     fun triggerSearch(text: String) {
-        handleTriggerSearch(text)
+        viewModelScope.launch {
+            _searchDebounce.emit(text)
+        }
     }
 
     fun addRss() {
@@ -58,15 +60,11 @@ class AddRssViewModel(
 
     private suspend fun search(link: String) {
         if (link.isEmpty()) return
-        var url = link.lowercase()
-        if (!link.matches(Regex("^(https://).*$"))) url = "https://$link"
         modifyState { getState().copy(stateType = AddRssStateType.SEARCH) }
 
-        val newRss = _searchRssGateway.search(url)
-
-        when (newRss) {
-            is Success<Rss> -> handleSuccessSearch(newRss.data, url)
-            is Error -> handleErrorSearch(newRss.error)
+        when (val result = SearchChannelUseCase(_searchGateway).invoke(link)) {
+            is Success<Rss> -> handleSuccessSearch(result.data, link)
+            is Error -> handleErrorSearch(result.error)
         }
     }
 
@@ -127,10 +125,6 @@ class AddRssViewModel(
             stateType = AddRssStateType.SEARCH_FAIL,
             errorMessage = R.string.search_error_parse
         ))
-    }
-
-    private fun handleTriggerSearch(text: String) = viewModelScope.launch {
-        _searchDebounce.emit(text)
     }
 
     private fun convertRssToFeed(rss: Rss): Feed {

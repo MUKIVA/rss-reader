@@ -1,8 +1,8 @@
 package com.mukiva.rssreader
 
 import android.app.Application
-import com.mukiva.rssreader.addrss.data.HttpSearchRssGateway
-import com.mukiva.rssreader.addrss.data.SearchRssGateway
+import com.mukiva.rssreader.addrss.data.HttpRssSearchGateway
+import com.mukiva.rssreader.addrss.data.RssSearchGateway
 import com.mukiva.rssreader.addrss.data.parsing.entity.MyObjectBox
 import com.mukiva.rssreader.watchfeeds.data.ORMRssStorage
 import com.mukiva.rssreader.watchfeeds.data.RssStorage
@@ -11,7 +11,7 @@ import timber.log.Timber
 
 class App : Application() {
     lateinit var feedsService: RssStorage
-    lateinit var searchService: SearchRssGateway
+    lateinit var searchService: RssSearchGateway
 
     lateinit var store: BoxStore
         private set
@@ -27,6 +27,6 @@ class App : Application() {
             .androidContext(this)
             .build()
         feedsService = ORMRssStorage(store)
-        searchService = HttpSearchRssGateway()
+        searchService = HttpRssSearchGateway()
     }
 }

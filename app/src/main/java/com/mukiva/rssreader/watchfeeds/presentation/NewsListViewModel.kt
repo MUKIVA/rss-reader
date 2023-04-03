@@ -2,19 +2,43 @@ package com.mukiva.rssreader.watchfeeds.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.mukiva.rssreader.R
-import com.mukiva.rssreader.addrss.data.SearchRssGateway
+import com.mukiva.rssreader.addrss.data.RssSearchGateway
+import com.mukiva.rssreader.addrss.data.parsing.elements.Channel
 import com.mukiva.rssreader.addrss.data.parsing.elements.Item
-import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
 import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
 import com.mukiva.rssreader.watchfeeds.data.RssStorage
 import com.mukiva.rssreader.watchfeeds.domain.News
 import kotlinx.coroutines.launch
 import com.mukiva.rssreader.addrss.domain.*
+import kotlinx.coroutines.TimeoutCancellationException
+import okio.IOException
+
+
+class RefreshChannelUseCase(
+    private val _rssStorage: RssStorage,
+    private val _rssSearchService: RssSearchGateway
+) {
+
+    suspend operator fun invoke(id: Long): Result<Channel> {
+        return try {
+            val channel = _rssStorage.getRss(id)
+            val rss = _rssSearchService.search(channel.refreshLink)
+            Success(_rssStorage.update(rss, id))
+        } catch (e: Exception) {
+            when (e) {
+                is TimeoutCancellationException -> Error(TimeoutError)
+                is IOException -> Error(ConnectionError)
+                else -> Error(UnknownError)
+            }
+        }
+    }
+
+}
 
 class NewsListViewModel(
     val id: Long,
     private val _rssStorage: RssStorage,
-    private val _rssSearchService: SearchRssGateway
+    private val _rssSearchService: RssSearchGateway
 ) : SingleStateViewModel<NewsListState, NewsListEvents>(
     NewsListState(
         id = id,
@@ -38,11 +62,10 @@ class NewsListViewModel(
     fun refresh() {
         viewModelScope.launch {
             val id = getState().id
-            val rss = _rssStorage.getRss(id)
 
-            when (val result = _rssSearchService.search(rss.refreshLink)) {
+            when (val result = RefreshChannelUseCase(_rssStorage, _rssSearchService).invoke(id)) {
                 is Error -> handleErrorRefresh(result.error)
-                is Success<Rss> -> handleSuccessRefresh(result.data, id)
+                is Success<Channel> -> handleSuccessRefresh(result.data)
             }
         }
     }
@@ -57,9 +80,8 @@ class NewsListViewModel(
         )
     }
 
-    private suspend fun handleSuccessRefresh(rss: Rss, id: Long) {
-        val newRss = _rssStorage.update(rss, id)
-        val news = newRss.items.map { itemToNews(it) }
+    private fun handleSuccessRefresh(channel: Channel) {
+        val news = channel.items.map { itemToNews(it) }
         modifyState(getState().copy(
             stateType = getStateType(news),
             news = news
