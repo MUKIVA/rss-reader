@@ -1,8 +1,8 @@
 package com.mukiva.rssreader.watchfeeds.presentation
 
-import com.mukiva.rssreader.watchfeeds.domain.Feed
+import com.mukiva.rssreader.watchfeeds.domain.FeedSummary
 
 data class FeedState(
     val stateType: FeedStateType,
-    val feeds: List<Feed>
+    val feeds: List<FeedSummary>
 )

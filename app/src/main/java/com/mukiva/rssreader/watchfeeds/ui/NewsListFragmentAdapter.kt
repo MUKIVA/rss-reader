@@ -3,11 +3,11 @@ package com.mukiva.rssreader.watchfeeds.ui
 import android.annotation.SuppressLint
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.mukiva.rssreader.watchfeeds.domain.Feed
+import com.mukiva.rssreader.watchfeeds.domain.FeedSummary
 
 class NewsListFragmentAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
-    var fragments: List<Feed> = emptyList()
+    var fragments: List<FeedSummary> = emptyList()
         @SuppressLint("NotifyDataSetChanged")
         set (value) {
             field = value

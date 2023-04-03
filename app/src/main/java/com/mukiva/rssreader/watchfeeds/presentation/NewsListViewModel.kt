@@ -10,30 +10,6 @@ import com.mukiva.rssreader.watchfeeds.data.RssStorage
 import com.mukiva.rssreader.watchfeeds.domain.News
 import kotlinx.coroutines.launch
 import com.mukiva.rssreader.addrss.domain.*
-import kotlinx.coroutines.TimeoutCancellationException
-import okio.IOException
-
-
-class RefreshChannelUseCase(
-    private val _rssStorage: RssStorage,
-    private val _rssSearchService: RssSearchGateway
-) {
-
-    suspend operator fun invoke(id: Long): Result<Channel> {
-        return try {
-            val channel = _rssStorage.getRss(id)
-            val rss = _rssSearchService.search(channel.refreshLink)
-            Success(_rssStorage.update(rss, id))
-        } catch (e: Exception) {
-            when (e) {
-                is TimeoutCancellationException -> Error(TimeoutError)
-                is IOException -> Error(ConnectionError)
-                else -> Error(UnknownError)
-            }
-        }
-    }
-
-}
 
 class NewsListViewModel(
     val id: Long,
@@ -46,6 +22,11 @@ class NewsListViewModel(
         news = listOf()
     )
 ) {
+
+    init {
+        loadData()
+    }
+
     fun loadData() {
         viewModelScope.launch {
             val state = getState()

@@ -23,11 +23,8 @@ import com.mukiva.rssreader.R
 import com.mukiva.rssreader.addrss.ui.AddRssFragment
 import com.mukiva.rssreader.databinding.FragmentWatchFeedsBinding
 import com.mukiva.rssreader.watchfeeds.di.factory
-import com.mukiva.rssreader.watchfeeds.domain.Feed
-import com.mukiva.rssreader.watchfeeds.presentation.FeedEvents
-import com.mukiva.rssreader.watchfeeds.presentation.FeedState
-import com.mukiva.rssreader.watchfeeds.presentation.FeedStateType
-import com.mukiva.rssreader.watchfeeds.presentation.FeedListViewModel
+import com.mukiva.rssreader.watchfeeds.domain.FeedSummary
+import com.mukiva.rssreader.watchfeeds.presentation.*
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -157,7 +154,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         (requireActivity() as MenuHost).removeMenuProvider(_menuProvider)
     }
 
-    private fun showAboutFeedDialog(item: Feed) {
+    private fun showAboutFeedDialog(item: FeedSummary) {
         val ctx = requireContext()
         val dialog = BottomSheetDialog(ctx)
         val view = FeedInfoBottomSheetDialog(ctx)
@@ -171,7 +168,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         dialog.show()
     }
 
-    private fun showDeleteAlertDialog(item: Feed) {
+    private fun showDeleteAlertDialog(item: FeedSummary) {
         val builder = AlertDialog.Builder(requireContext())
         val message = getString(R.string.delete_alert_dialog_message, item.title)
         builder.setMessage(message)
