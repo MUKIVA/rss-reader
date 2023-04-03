@@ -69,6 +69,7 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
     }
 
     private fun renderNormalState() {
+        _binding.searchField.clearField()
         _binding.searchField.inProgress = false
         _binding.searchField.errorMsgIsVisible = false
         _binding.searchField.previewAreaIsVisible = false

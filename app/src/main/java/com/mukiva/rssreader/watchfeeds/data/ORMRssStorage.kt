@@ -3,15 +3,17 @@ package com.mukiva.rssreader.watchfeeds.data
 import com.mukiva.rssreader.addrss.data.parsing.elements.*
 import com.mukiva.rssreader.addrss.data.parsing.entity.ChannelEntity
 import com.mukiva.rssreader.addrss.data.parsing.entity.ItemEntity
+import com.mukiva.rssreader.watchfeeds.converters.RssConverter
 import io.objectbox.BoxStore
 
-class ORMRssService(
+class ORMRssStorage(
     store: BoxStore
-) : RssService {
+) : RssStorage {
 
     private val _channelBox = store.boxFor(ChannelEntity::class.java)
+    private val _converter = RssConverter()
 
-    override suspend fun updateRss(rss: Rss, id: Long): ChannelEntity {
+    override suspend fun update(rss: Rss, id: Long): Channel {
         val entity = _channelBox[id]
         entity.items.clear()
         entity.items.applyChangesToDb()
@@ -23,27 +25,32 @@ class ORMRssService(
             imageUrl = rss.channel.image?.url
         ))
         entity.items.applyChangesToDb()
-        return _channelBox[id]
+        return _converter.entityToChannel(_channelBox[id])
     }
 
-    override suspend fun deleteRss(rss: ChannelEntity): List<ChannelEntity> {
-        _channelBox.remove(rss.id)
+    override suspend fun delete(id: Long): List<Channel> {
+        _channelBox.remove(id)
         return getAllRss()
     }
 
-    override suspend fun addRss(rss: Rss): List<ChannelEntity> {
+    override suspend fun add(rss: Rss): List<Channel> {
         val entity = createChannel(rss)
         rss.channel.items.forEach { entity.items.add(createItemEntity(it)) }
         _channelBox.put(entity)
         return getAllRss()
     }
 
-    override suspend fun getAllRss(): List<ChannelEntity> {
-        return _channelBox.all
+    override suspend fun getAllRss(): List<Channel> {
+        return _channelBox.all.map { _converter.entityToChannel(it) }
     }
 
-    override suspend fun getChannelItems(rss: ChannelEntity): List<ItemEntity> {
-        return _channelBox[rss.id].items.toList()
+    override suspend fun getItems(id: Long): List<Item> {
+        return _channelBox[id].items.map { _converter.entityToItem(it) }
+    }
+
+    override suspend fun getRss(id: Long): Channel {
+        val entity = _channelBox[id]
+        return _converter.entityToChannel(entity)
     }
 
     private fun createChannel(rss: Rss): ChannelEntity {

@@ -83,6 +83,10 @@ class SearchRssView
         _binding.addToFeedBtn.setOnClickListener(onClickListener)
     }
 
+    fun clearField() {
+        _binding.searchRssField.text.clear()
+    }
+
     private fun setImage(link: String) {
         if (link.trim().isEmpty()) return
         Glide.with(this)

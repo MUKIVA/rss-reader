@@ -1,27 +1,26 @@
 package com.mukiva.rssreader.watchfeeds.presentation
 
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.MimeTypes
 import com.mukiva.rssreader.R
-import com.mukiva.rssreader.addrss.data.parsing.entity.ChannelEntity
+import com.mukiva.rssreader.addrss.data.parsing.elements.Channel
+import com.mukiva.rssreader.addrss.data.parsing.elements.Item
 import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
-import com.mukiva.rssreader.watchfeeds.converters.RssConverter
-import com.mukiva.rssreader.watchfeeds.data.RssService
+import com.mukiva.rssreader.watchfeeds.data.RssStorage
 import com.mukiva.rssreader.watchfeeds.domain.Feed
+import com.mukiva.rssreader.watchfeeds.domain.News
 import kotlinx.coroutines.launch
 
 class FeedListViewModel(
-    private val _rssService: RssService,
+    private val _rssStorage: RssStorage,
 ) : SingleStateViewModel<FeedState, FeedEvents>(
     FeedState(
         stateType = FeedStateType.LOADING,
         feeds = listOf()
     )
 ) {
-    private val converter = RssConverter()
-
     companion object {
         const val MAX_PAGE_COUNT = 10
-        const val UNDEFINED_MSG = "Undefined"
     }
 
     init {
@@ -40,10 +39,9 @@ class FeedListViewModel(
         handleTriggerAboutFeedDialog(index)
     }
 
-    fun deleteFeed(index: Int) { viewModelScope.launch {
-        val ent = _rssService.getAllRss()[index]
+    fun deleteFeed(id: Long) { viewModelScope.launch {
         modifyState(getState().copy(stateType = FeedStateType.LOADING))
-        val feeds = _rssService.deleteRss(ent).map { createFeed(it) }
+        val feeds = _rssStorage.delete(id).map { createFeed(it) }
         modifyState(FeedState(
             stateType = getFeedStateType(feeds),
             feeds = feeds
@@ -52,7 +50,7 @@ class FeedListViewModel(
 
     fun loadFeeds() { viewModelScope.launch {
         modifyState(getState().copy(stateType = FeedStateType.LOADING))
-        val feeds = _rssService.getAllRss().map { createFeed(it) }
+        val feeds = _rssStorage.getAllRss().map { createFeed(it) }
         modifyState(FeedState(
             stateType = getFeedStateType(feeds),
             feeds = feeds
@@ -79,15 +77,31 @@ class FeedListViewModel(
         event(FeedEvents.ShowFeedDetails(getState().feeds[index]))
     }
 
-    private suspend fun createFeed(channelEntity: ChannelEntity): Feed {
+    private suspend fun createFeed(channelEntity: Channel): Feed {
            return Feed(
+               id = channelEntity.id,
                title = channelEntity.title,
                description = channelEntity.description,
                newsRepoLink = channelEntity.link,
-               imageLink = channelEntity.imageUrl,
-               news = _rssService.getChannelItems(channelEntity).map {
-                   converter.entityToNews(it)
+               imageLink = channelEntity.image?.link,
+               news = _rssStorage.getItems(channelEntity.id).map {
+                   itemToNews(it)
                }
            )
+    }
+
+    private fun itemToNews(item: Item): News {
+
+        var imageLink: String? = null
+        if (item.enclosure?.type != null && item.enclosure.type == MimeTypes.IMAGE_JPEG)
+            imageLink = item.enclosure.url
+
+        return News(
+            title = item.title ?: "Undefined",
+            description = item.description ?: "Undefined",
+            date = item.pubDate,
+            imageLink = imageLink,
+            originalLink = item.link ?: ""
+        )
     }
 }

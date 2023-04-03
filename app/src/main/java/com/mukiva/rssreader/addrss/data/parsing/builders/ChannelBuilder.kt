@@ -28,6 +28,7 @@ class ChannelBuilder {
 
     fun build(): Channel {
         return Channel(
+            id = 0,
             title = title ?: throw IllegalStateException(),
             link = link ?: throw IllegalStateException(),
             description = description ?: throw IllegalStateException(),
@@ -47,7 +48,8 @@ class ChannelBuilder {
             textInput = textInput,
             skipDays = skipHours,
             skipHours = skipDays,
-            items = _items
+            items = _items,
+            refreshLink = ""
         )
     }
 

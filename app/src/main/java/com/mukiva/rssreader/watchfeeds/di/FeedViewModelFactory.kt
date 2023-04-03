@@ -8,14 +8,15 @@ import com.mukiva.rssreader.watchfeeds.presentation.FeedListViewModel
 import com.mukiva.rssreader.watchfeeds.presentation.NewsListViewModel
 
 class FeedViewModelFactory(
-    private val _app: App
+    private val _app: App,
+    private val _args: List<Any>
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val viewModel = when ( modelClass ) {
             NewsListViewModel::class.java -> {
-                NewsListViewModel(_app.feedsService, _app.searchService)
+                NewsListViewModel(_args[0] as Long, _app.feedsService, _app.searchService)
             }
             FeedListViewModel::class.java -> {
                 FeedListViewModel(_app.feedsService)
@@ -29,4 +30,7 @@ class FeedViewModelFactory(
     }
 }
 
-fun Fragment.factory() = FeedViewModelFactory(requireContext().applicationContext as App)
+fun Fragment.factory(vararg args: Any) = FeedViewModelFactory(
+    requireContext().applicationContext as App,
+    args.toList()
+    )

@@ -17,8 +17,7 @@ class NewsListFragmentAdapter(fragment: Fragment) : FragmentStateAdapter(fragmen
     override fun getItemCount(): Int = fragments.size
 
     override fun createFragment(position: Int): Fragment {
-        val view = NewsListFragment()
-        view.setPosition(position)
-        return view
+        val feed = fragments[position]
+        return NewsListFragment(feed.id)
     }
 }

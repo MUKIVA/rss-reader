@@ -2,51 +2,64 @@ package com.mukiva.rssreader.watchfeeds.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.mukiva.rssreader.R
-import com.mukiva.rssreader.addrss.data.SearchRssService
+import com.mukiva.rssreader.addrss.data.SearchRssGateway
+import com.mukiva.rssreader.addrss.data.parsing.elements.Item
 import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
 import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
-import com.mukiva.rssreader.watchfeeds.converters.RssConverter
-import com.mukiva.rssreader.watchfeeds.data.RssService
+import com.mukiva.rssreader.watchfeeds.data.RssStorage
 import com.mukiva.rssreader.watchfeeds.domain.News
 import kotlinx.coroutines.launch
 import com.mukiva.rssreader.addrss.domain.*
 
 class NewsListViewModel(
-    private val _rssService: RssService,
-    private val _rssSearchService: SearchRssService
+    val id: Long,
+    private val _rssStorage: RssStorage,
+    private val _rssSearchService: SearchRssGateway
 ) : SingleStateViewModel<NewsListState, NewsListEvents>(
     NewsListState(
+        id = id,
         stateType = NewsListStateType.LOADING,
         news = listOf()
     )
 ) {
-    private val converter = RssConverter()
-
-    fun loadData(index: Int) { viewModelScope.launch {
-        val rss = _rssService.getAllRss()[index]
-        val news = _rssService.getChannelItems(rss).map {
-            converter.entityToNews(it)
-        }
-        modifyState(NewsListState(
-            stateType = getStateType(news),
-            news = news
-        ))
-    } }
-
-    fun refresh(index: Int) {
+    fun loadData() {
         viewModelScope.launch {
-            val entity = _rssService.getAllRss()[index]
+            val state = getState()
+            val news = _rssStorage.getItems(state.id).map {
+                itemToNews(it)
+            }
+            modifyState(state.copy(
+                stateType = getStateType(news),
+                news = news
+            ))
+        }
+    }
 
-            when (val result = _rssSearchService.search(entity.refreshLink)) {
+    fun refresh() {
+        viewModelScope.launch {
+            val id = getState().id
+            val rss = _rssStorage.getRss(id)
+
+            when (val result = _rssSearchService.search(rss.refreshLink)) {
                 is Error -> handleErrorRefresh(result.error)
-                is Success<Rss> -> handleSuccessRefresh(result.data, entity.id)
+                is Success<Rss> -> handleSuccessRefresh(result.data, id)
             }
         }
     }
 
+    private fun itemToNews(item: Item): News {
+        return News(
+            title = item.title ?: "Undefined",
+            description =  item.description ?: "Undefined",
+            date = item.pubDate,
+            imageLink = item.enclosure?.url,
+            originalLink = item.link ?: ""
+        )
+    }
+
     private suspend fun handleSuccessRefresh(rss: Rss, id: Long) {
-        val entity = _rssService.updateRss(rss, id)
-        val news = entity.items.map { converter.entityToNews(it) }
+        val newRss = _rssStorage.update(rss, id)
+        val news = newRss.items.map { itemToNews(it) }
         modifyState(getState().copy(
             stateType = getStateType(news),
             news = news

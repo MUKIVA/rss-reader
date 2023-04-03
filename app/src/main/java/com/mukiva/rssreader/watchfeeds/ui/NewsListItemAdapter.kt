@@ -26,7 +26,7 @@ class NewsListItemAdapter(
         set(value) {
             val diffCallback = NewsDiffUtilCallback(field, value)
             val diffResult = DiffUtil.calculateDiff(diffCallback)
-            field = value
+            field = value.toList()
             diffResult.dispatchUpdatesTo(this)
         }
 

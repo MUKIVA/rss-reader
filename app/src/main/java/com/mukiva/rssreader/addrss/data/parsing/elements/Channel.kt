@@ -3,6 +3,8 @@ package com.mukiva.rssreader.addrss.data.parsing.elements
 import java.util.Date
 
 data class Channel(
+    val id: Long,
+    val refreshLink: String,
     val title: String = "",
     val link: String = "",
     val description: String = "",

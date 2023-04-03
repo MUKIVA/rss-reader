@@ -23,12 +23,13 @@ import com.mukiva.rssreader.watchfeeds.presentation.NewsListStateType
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class NewsListFragment : Fragment(R.layout.fragment_news_list) {
+class NewsListFragment(
+    val id: Long,
+) : Fragment(R.layout.fragment_news_list) {
 
     private lateinit var _binding: FragmentNewsListBinding
     private lateinit var _adapter: NewsListItemAdapter
-    private val _viewModel: NewsListViewModel by viewModels { factory() }
-    private var _position: Int = 0
+    private val _viewModel: NewsListViewModel by viewModels { factory(id) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,16 +46,12 @@ class NewsListFragment : Fragment(R.layout.fragment_news_list) {
         reloadWhenResume()
     }
 
-    fun setPosition(position: Int) {
-        _position = position
-    }
-
     private fun reloadWhenResume() = lifecycleScope.launchWhenResumed {
-        _viewModel.loadData(_position)
+        _viewModel.loadData()
     }
 
     private fun refresh() {
-        _viewModel.refresh(_position)
+        _viewModel.refresh()
     }
 
     private fun initActions() {

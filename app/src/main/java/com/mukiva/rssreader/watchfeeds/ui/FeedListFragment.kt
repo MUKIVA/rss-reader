@@ -183,9 +183,10 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
     }
 
     private fun handleDialogResponse(response: Int) {
+        val feed = _viewModel.state.value!!.feeds[_binding.feedViewPager.currentItem]
         when (response) {
             DialogInterface.BUTTON_POSITIVE ->
-                _viewModel.deleteFeed(_binding.feedViewPager.currentItem)
+                _viewModel.deleteFeed(feed.id)
         }
     }
 }

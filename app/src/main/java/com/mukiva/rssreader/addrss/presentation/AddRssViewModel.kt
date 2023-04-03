@@ -2,12 +2,12 @@ package com.mukiva.rssreader.addrss.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.mukiva.rssreader.R
-import com.mukiva.rssreader.addrss.data.SearchRssService
+import com.mukiva.rssreader.addrss.data.SearchRssGateway
 import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
 import com.mukiva.rssreader.addrss.domain.*
 import com.mukiva.rssreader.addrss.domain.UnknownError
 import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
-import com.mukiva.rssreader.watchfeeds.data.RssService
+import com.mukiva.rssreader.watchfeeds.data.RssStorage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.debounce
@@ -16,8 +16,8 @@ import kotlinx.coroutines.flow.onEach
 
 @FlowPreview
 class AddRssViewModel(
-    private val _searchRssService: SearchRssService,
-    private val _rssService: RssService
+    private val _searchRssGateway: SearchRssGateway,
+    private val _rssStorage: RssStorage
 ) : SingleStateViewModel<AddRssState, Nothing>(
     AddRssState(
         stateType = AddRssStateType.NORMAL,
@@ -26,7 +26,7 @@ class AddRssViewModel(
     )
 ) {
     private val _searchDebounce = MutableSharedFlow<String>()
-    private var _currentRss: Rss = Rss()
+    private var _currentRss: Rss? = null
 
     companion object {
         private const val TIME_TO_SEARCH: Long = 1000
@@ -46,7 +46,13 @@ class AddRssViewModel(
 
     fun addRss() {
         viewModelScope.launch {
-            _rssService.addRss(_currentRss)
+            _rssStorage.add(_currentRss!!)
+            _currentRss = null
+            modifyState(getState().copy(
+                stateType = AddRssStateType.NORMAL,
+                rssItem = null,
+                errorMessage = null
+            ))
         }
     }
 
@@ -56,7 +62,7 @@ class AddRssViewModel(
         if (!link.matches(Regex("^(https://).*$"))) url = "https://$link"
         modifyState { getState().copy(stateType = AddRssStateType.SEARCH) }
 
-        val newRss = _searchRssService.search(url)
+        val newRss = _searchRssGateway.search(url)
 
         when (newRss) {
             is Success<Rss> -> handleSuccessSearch(newRss.data, url)
@@ -73,11 +79,18 @@ class AddRssViewModel(
         }
     }
 
-    private fun handleSuccessSearch(rss: Rss, refreshLink: String) {
+    private suspend fun handleSuccessSearch(rss: Rss, refreshLink: String) {
         _currentRss = rss.copy(refreshLink = refreshLink)
+
+        val allrss = _rssStorage.getAllRss()
+        if (allrss.firstOrNull { it.refreshLink.equals(_currentRss!!.refreshLink) } != null) {
+            handleRssAlreadyAdded()
+            return
+        }
+
         modifyState(getState().copy(
             stateType = AddRssStateType.SEARCH_SUCCESS,
-            rssItem = ConverRssToFeed(_currentRss)
+            rssItem = convertRssToFeed(_currentRss!!)
         ))
     }
 
@@ -120,7 +133,7 @@ class AddRssViewModel(
         _searchDebounce.emit(text)
     }
 
-    private fun ConverRssToFeed(rss: Rss): Feed {
+    private fun convertRssToFeed(rss: Rss): Feed {
         return Feed(
             title = rss.channel.title,
             description = rss.channel.description,

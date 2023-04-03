@@ -14,7 +14,7 @@ import okio.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class HttpSearchRssService : BaseOkHttpSource(
+class HttpSearchRssGateway : BaseOkHttpSource(
     object : AsyncCallCallbacks {
         override fun onCancel(continuation: CancellableContinuation<Response>) {
             continuation.cancel()
@@ -36,7 +36,7 @@ class HttpSearchRssService : BaseOkHttpSource(
             continuation.resume(response)
         }
     }
-), SearchRssService {
+), SearchRssGateway {
 
     private val _rssParser = RssParsingService()
 
@@ -61,7 +61,7 @@ class HttpSearchRssService : BaseOkHttpSource(
                 if (!response.isSuccessful) return@withTimeout Error(UnknownError)
 
                 return@withTimeout withContext(Dispatchers.IO) {
-                    val rss: Rss = _rssParser.parse(response.body!!.byteStream())
+                    val rss: Rss = _rssParser.parse(response.body!!.byteStream()).copy(refreshLink = link)
                     Success<Rss>(rss)
                 }
             }
