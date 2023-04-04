@@ -21,7 +21,7 @@ class RssParser : XmlParer<Rss>(), StackParser {
         _handlerStack.add(RssParseHandler(this) {
             _rss = it
         })
-        parser.setInput(stream, "UTF-8")
+        parser.setInput(stream, null)
         while (parser.eventType != XmlPullParser.END_DOCUMENT) {
 
             when (parser.eventType) {
