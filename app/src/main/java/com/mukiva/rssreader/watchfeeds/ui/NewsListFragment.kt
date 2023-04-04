@@ -24,12 +24,14 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class NewsListFragment(
-    val id: Long,
+    val id: Long
 ) : Fragment(R.layout.fragment_news_list) {
 
     private lateinit var _binding: FragmentNewsListBinding
     private lateinit var _adapter: NewsListItemAdapter
     private val _viewModel: NewsListViewModel by viewModels { factory(id) }
+
+    constructor() : this(0)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -39,15 +41,6 @@ class NewsListFragment(
         initActions()
         initRefreshLayouts()
         observeViewModel()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        reloadWhenResume()
-    }
-
-    private fun reloadWhenResume() = lifecycleScope.launchWhenResumed {
-        _viewModel.loadData()
     }
 
     private fun refresh() {
@@ -110,6 +103,7 @@ class NewsListFragment(
     }
 
     private fun render(state: NewsListState) {
+        println("RENDER_NEWS ${state.stateType}")
         when (state.stateType) {
             NewsListStateType.EMPTY -> renderEmptyState()
             NewsListStateType.LOADING -> renderLoadingState()

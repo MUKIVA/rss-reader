@@ -49,7 +49,6 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
             override fun aboutFeed() {
                 _viewModel.triggerAboutFeedDialog(_binding.feedViewPager.currentItem)
             }
-
         }
     )
 
@@ -63,11 +62,11 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
     override fun onResume() {
         super.onResume()
         initActions()
-        loadWhenResume()
+        _viewModel.loadFeeds()
     }
 
-    private fun loadWhenResume() {
-        _viewModel.loadFeeds()
+    private fun loadPages() {
+        _adapter.feedSummaries = _viewModel.getFeeds()
     }
 
     private fun initActions() {
@@ -80,7 +79,10 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
 
     private fun initFields(view: View) {
         _binding = FragmentWatchFeedsBinding.bind(view)
-        _adapter = NewsListFragmentAdapter(this)
+        _adapter = NewsListFragmentAdapter(
+            childFragmentManager,
+            viewLifecycleOwner.lifecycle
+        )
     }
 
     private fun observeViewModel() {
@@ -125,7 +127,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         _binding.feedEmpty.root.isVisible = false
         _binding.feedViewPager.isVisible = true
         _binding.tabLayout.isVisible = true
-        _adapter.fragments = _viewModel.state.value?.feeds ?: emptyList()
+        loadPages()
     }
 
     private fun renderEmptyState() {
@@ -134,14 +136,16 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         _binding.tabLayout.isVisible = false
         _binding.feedViewPager.isVisible = false
         _binding.feedEmpty.root.isVisible = true
-        _adapter.fragments = _viewModel.state.value?.feeds ?: emptyList()
+        _adapter.feedSummaries = _viewModel.state.value?.feeds ?: emptyList()
     }
 
     private fun initPager() {
-        _binding.feedViewPager.adapter = _adapter
-        TabLayoutMediator(_binding.tabLayout, _binding.feedViewPager) { tab, pos ->
-            tab.text = _viewModel.state.value?.feeds?.get(pos)?.title
-        }.attach()
+        with (_binding.feedViewPager) {
+            adapter = _adapter
+            TabLayoutMediator(_binding.tabLayout, _binding.feedViewPager) { tab, pos ->
+                tab.text = _viewModel.state.value?.feeds?.get(pos)?.title
+            }.attach()
+        }
     }
 
     private fun initMenu() {
@@ -180,10 +184,11 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
     }
 
     private fun handleDialogResponse(response: Int) {
-        val feed = _viewModel.state.value!!.feeds[_binding.feedViewPager.currentItem]
+        val feed = _viewModel.getFeeds()[_binding.feedViewPager.currentItem]
         when (response) {
-            DialogInterface.BUTTON_POSITIVE ->
+            DialogInterface.BUTTON_POSITIVE -> {
                 _viewModel.deleteFeed(feed.id)
+            }
         }
     }
 }

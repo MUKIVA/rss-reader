@@ -16,6 +16,7 @@ class FeedListViewModel(
         feeds = listOf()
     )
 ) {
+
     companion object {
         const val MAX_PAGE_COUNT = 10
     }
@@ -50,18 +51,22 @@ class FeedListViewModel(
         viewModelScope.launch {
             modifyState(getState().copy(stateType = FeedStateType.LOADING))
             val feeds = _rssStorage.delete(id).map { createFeedSummary(it) }
-            modifyState(FeedState(
+            modifyState(getState().copy(
                 stateType = getFeedStateType(feeds),
                 feeds = feeds
             ))
         }
     }
 
+    fun getFeeds(): List<FeedSummary> {
+        return getState().feeds.toList()
+    }
+
     fun loadFeeds() {
         viewModelScope.launch {
             modifyState(getState().copy(stateType = FeedStateType.LOADING))
             val feeds = _rssStorage.getAllRss().map { createFeedSummary(it) }
-            modifyState(FeedState(
+            modifyState(getState().copy(
                 stateType = getFeedStateType(feeds),
                 feeds = feeds
             ))

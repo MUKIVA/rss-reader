@@ -1,23 +1,37 @@
 package com.mukiva.rssreader.watchfeeds.ui
 
-import android.annotation.SuppressLint
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.mukiva.rssreader.watchfeeds.domain.FeedSummary
 
-class NewsListFragmentAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+class NewsListFragmentAdapter(
+    fm: FragmentManager,
+    lifecycle: Lifecycle
+) : FragmentStateAdapter(fm, lifecycle) {
 
-    var fragments: List<FeedSummary> = emptyList()
-        @SuppressLint("NotifyDataSetChanged")
+    var feedSummaries: List<FeedSummary> = emptyList()
         set (value) {
+            val diffCallback = FeedFragmentDiffUtilCallback(field, value)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
             field = value
-            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this)
         }
 
-    override fun getItemCount(): Int = fragments.size
+    override fun getItemCount(): Int = feedSummaries.size
+
+    override fun getItemId(position: Int): Long {
+        return feedSummaries[position].id
+    }
+
+    override fun containsItem(itemId: Long): Boolean {
+        return feedSummaries.firstOrNull { it.id == itemId } != null
+    }
 
     override fun createFragment(position: Int): Fragment {
-        val feed = fragments[position]
+        val feed = feedSummaries[position]
         return NewsListFragment(feed.id)
     }
 }

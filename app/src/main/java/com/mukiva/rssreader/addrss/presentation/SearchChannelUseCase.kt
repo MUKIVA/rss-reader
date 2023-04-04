@@ -17,7 +17,7 @@ class SearchChannelUseCase(
         if (!link.matches(Regex("^(https://).*$")))
             url = "https://$link"
 
-        if (isValidUrl(url)) return Error(InvalidUrlError)
+        if (!isValidUrl(url)) return Error(InvalidUrlError)
 
         return try {
             val newRss = _searchGateway.search(url)

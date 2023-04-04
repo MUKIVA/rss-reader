@@ -63,7 +63,7 @@ class AddRssViewModel(
         modifyState { getState().copy(stateType = AddRssStateType.SEARCH) }
 
         when (val result = SearchChannelUseCase(_searchGateway).invoke(link)) {
-            is Success<Rss> -> handleSuccessSearch(result.data, link)
+            is Success<Rss> -> handleSuccessSearch(result.data, result.data.refreshLink)
             is Error -> handleErrorSearch(result.error)
         }
     }
