@@ -16,10 +16,10 @@ class FeedViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val viewModel = when ( modelClass ) {
             NewsListViewModel::class.java -> {
-                NewsListViewModel(_args[0] as Long, _app.feedsService, _app.searchService)
+                NewsListViewModel(_args[0] as Long, _app.rssStorage, _app.searchGateway)
             }
             FeedListViewModel::class.java -> {
-                FeedListViewModel(_app.feedsService)
+                FeedListViewModel(_app.rssStorage)
             }
             else -> {
                 throw IllegalStateException("Unknown view model class")

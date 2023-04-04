@@ -22,6 +22,7 @@ class ItemBuilder {
             throw IllegalStateException()
 
         return Item(
+            id = 0,
             guid =  guid,
             title =  title,
             description = description,

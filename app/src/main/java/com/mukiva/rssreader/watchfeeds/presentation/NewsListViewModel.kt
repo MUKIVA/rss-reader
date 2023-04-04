@@ -27,7 +27,7 @@ class NewsListViewModel(
         loadData()
     }
 
-    fun loadData() {
+    private fun loadData() {
         viewModelScope.launch {
             val state = getState()
             val news = _rssStorage.getItems(state.id).map {
@@ -53,6 +53,7 @@ class NewsListViewModel(
 
     private fun itemToNews(item: Item): News {
         return News(
+            id = item.id,
             title = item.title ?: "Undefined",
             description =  item.description ?: "Undefined",
             date = item.pubDate,

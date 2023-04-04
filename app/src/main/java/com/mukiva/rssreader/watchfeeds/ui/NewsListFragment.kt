@@ -20,9 +20,11 @@ import com.mukiva.rssreader.watchfeeds.presentation.NewsListEvents
 import com.mukiva.rssreader.watchfeeds.presentation.NewsListState
 import com.mukiva.rssreader.watchfeeds.presentation.NewsListViewModel
 import com.mukiva.rssreader.watchfeeds.presentation.NewsListStateType
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@FlowPreview
 class NewsListFragment(
     val id: Long
 ) : Fragment(R.layout.fragment_news_list) {
@@ -64,11 +66,7 @@ class NewsListFragment(
             override fun onItemDetails(item: News) {
                 findNavController().navigate(R.id.action_watchFeedsFragment_to_watchDetailsFragment,
                     bundleOf(
-                        NewsDetailsFragment.ARG_TITLE to item.title,
-                        NewsDetailsFragment.ARG_DESCRIPTION to item.description,
-                        NewsDetailsFragment.ARG_DATE to item.date?.time,
-                        NewsDetailsFragment.ARG_IMAGE_LINK to item.imageLink,
-                        NewsDetailsFragment.ARG_ORIGINAL_LINK to item.originalLink
+                        NewsDetailsFragment.ARG_ITEM_ID to item.id
                     ))
             }
         })

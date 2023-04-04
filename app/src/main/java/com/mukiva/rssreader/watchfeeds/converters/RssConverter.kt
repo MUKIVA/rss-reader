@@ -33,6 +33,7 @@ class RssConverter {
         ) null else Enclosure(obj.enclosureUrl, obj.enclosureLength, obj.enclosureType)
 
         return Item(
+            id = obj.id,
             title = obj.title,
             description = obj.description,
             link = obj.link,
@@ -40,5 +41,4 @@ class RssConverter {
             enclosure = enclosure
         )
     }
-
 }

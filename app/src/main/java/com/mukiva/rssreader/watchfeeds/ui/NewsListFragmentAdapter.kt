@@ -6,7 +6,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.mukiva.rssreader.watchfeeds.domain.FeedSummary
+import kotlinx.coroutines.FlowPreview
 
+@FlowPreview
 class NewsListFragmentAdapter(
     fm: FragmentManager,
     lifecycle: Lifecycle

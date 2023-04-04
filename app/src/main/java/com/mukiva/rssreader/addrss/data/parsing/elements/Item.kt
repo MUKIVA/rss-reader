@@ -3,6 +3,7 @@ package com.mukiva.rssreader.addrss.data.parsing.elements
 import java.util.*
 
 data class Item(
+    val id: Long,
     val guid: Guid? = null,
     val title: String? = null,
     val description: String? = null,

@@ -6,7 +6,7 @@
         <item
             android:id="@+id/share_option"
             android:title="@string/share"
-            android:icon="@drawable/ic_share"
+            android:icon="@drawable/ic_share_24"
             app:showAsAction="ifRoom" />
 
     </group>

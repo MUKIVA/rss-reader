@@ -11,5 +11,6 @@ interface RssStorage {
     suspend fun getAllRss(): List<Channel>
     suspend fun getItems(id: Long): List<Item>
     suspend fun getRss(id: Long): Channel
+    suspend fun getItem(id: Long): Item
 
 }

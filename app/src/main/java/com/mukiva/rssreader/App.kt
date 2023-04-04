@@ -10,11 +10,10 @@ import io.objectbox.BoxStore
 import timber.log.Timber
 
 class App : Application() {
-    lateinit var feedsService: RssStorage
-    lateinit var searchService: RssSearchGateway
+    lateinit var rssStorage: RssStorage
+    lateinit var searchGateway: RssSearchGateway
 
-    lateinit var store: BoxStore
-        private set
+    private lateinit var store: BoxStore
 
     override fun onCreate() {
         super.onCreate()
@@ -26,7 +25,7 @@ class App : Application() {
         store = MyObjectBox.builder()
             .androidContext(this)
             .build()
-        feedsService = ORMRssStorage(store)
-        searchService = HttpRssSearchGateway()
+        rssStorage = ORMRssStorage(store)
+        searchGateway = HttpRssSearchGateway()
     }
 }

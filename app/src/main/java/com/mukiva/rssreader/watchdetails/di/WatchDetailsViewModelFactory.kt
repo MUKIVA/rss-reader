@@ -1,22 +1,22 @@
-package com.mukiva.rssreader.addrss.di
+package com.mukiva.rssreader.watchdetails.di
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.mukiva.rssreader.App
-import com.mukiva.rssreader.addrss.presentation.AddRssViewModel
+import com.mukiva.rssreader.watchdetails.presentation.WatchDetailsViewModel
 import kotlinx.coroutines.FlowPreview
 
 @FlowPreview
-class SearchViewModelFactory(
+class WatchDetailsViewModelFactory(
     private val _app: App
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val viewModel = when ( modelClass ) {
-            AddRssViewModel::class.java -> {
-                AddRssViewModel(_app.searchGateway, _app.rssStorage)
+            WatchDetailsViewModel::class.java -> {
+                WatchDetailsViewModel(_app.rssStorage)
             }
             else -> {
                 throw IllegalStateException("Unknown view model class")
@@ -28,4 +28,4 @@ class SearchViewModelFactory(
 }
 
 @FlowPreview
-fun Fragment.factory() = SearchViewModelFactory(requireContext().applicationContext as App)
+fun Fragment.factory() = WatchDetailsViewModelFactory(requireContext().applicationContext as App)

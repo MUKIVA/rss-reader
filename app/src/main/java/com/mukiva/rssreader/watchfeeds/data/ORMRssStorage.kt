@@ -1,16 +1,22 @@
 package com.mukiva.rssreader.watchfeeds.data
 
-import com.mukiva.rssreader.addrss.data.parsing.elements.*
+import com.mukiva.rssreader.addrss.data.parsing.elements.Channel
+import com.mukiva.rssreader.addrss.data.parsing.elements.Item
+import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
 import com.mukiva.rssreader.addrss.data.parsing.entity.ChannelEntity
 import com.mukiva.rssreader.addrss.data.parsing.entity.ItemEntity
 import com.mukiva.rssreader.watchfeeds.converters.RssConverter
 import io.objectbox.BoxStore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 
 class ORMRssStorage(
     store: BoxStore
 ) : RssStorage {
 
     private val _channelBox = store.boxFor(ChannelEntity::class.java)
+    private val _itemBox = store.boxFor(ItemEntity::class.java)
     private val _converter = RssConverter()
 
     override suspend fun update(rss: Rss, id: Long): Channel {
@@ -53,8 +59,17 @@ class ORMRssStorage(
         return _converter.entityToChannel(entity)
     }
 
+    override suspend fun getItem(id: Long): Item {
+        return  coroutineScope {
+            withContext(Dispatchers.IO) {
+                _converter.entityToItem(_itemBox[id])
+            }
+        }
+    }
+
     private fun createChannel(rss: Rss): ChannelEntity {
         return ChannelEntity(
+            id = rss.channel.id,
             title = rss.channel.title,
             link = rss.channel.link,
             description = rss.channel.description,
@@ -65,6 +80,7 @@ class ORMRssStorage(
 
     private fun createItemEntity(item: Item): ItemEntity {
         return ItemEntity(
+            id = item.id,
             title = item.title,
             description = item.description,
             link = item.link,
