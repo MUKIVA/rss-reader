@@ -1,11 +1,11 @@
 package com.mukiva.rssreader.addrss.data.parsing.handlers
 
-import com.mukiva.rssreader.addrss.data.parsing.StackParsingService
+import com.mukiva.rssreader.addrss.data.parsing.StackParser
 import java.text.SimpleDateFormat
 import java.util.*
 
 abstract class Rss2StackHandler(
-    _context: StackParsingService
+    _context: StackParser
 ) : BaseStackParseHandler(_context) {
 
     protected val dateFormatter = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZ", Locale.ENGLISH)

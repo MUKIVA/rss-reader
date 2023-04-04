@@ -1,11 +1,11 @@
 package com.mukiva.rssreader.addrss.data.parsing.handlers
 
-import com.mukiva.rssreader.addrss.data.parsing.StackParsingService
+import com.mukiva.rssreader.addrss.data.parsing.StackParser
 import com.mukiva.rssreader.addrss.data.parsing.builders.RssBuilder
 import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
 
 class RssParseHandler(
-    private val _context: StackParsingService,
+    private val _context: StackParser,
     private val _resultSetter: (Rss) -> Unit
 ) : Rss2StackHandler(_context) {
 

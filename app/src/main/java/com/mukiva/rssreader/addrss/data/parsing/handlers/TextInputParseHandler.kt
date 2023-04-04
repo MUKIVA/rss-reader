@@ -4,7 +4,7 @@ import com.mukiva.rssreader.addrss.data.parsing.builders.TextInputBuilder
 import com.mukiva.rssreader.addrss.data.parsing.elements.TextInput
 
 class TextInputParseHandler(
-    _context: com.mukiva.rssreader.addrss.data.parsing.StackParsingService,
+    _context: com.mukiva.rssreader.addrss.data.parsing.StackParser,
     private val _resultSetter: (TextInput) -> Unit
 ) : BaseStackParseHandler(_context) {
 

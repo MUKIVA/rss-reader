@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -24,6 +25,7 @@ import com.mukiva.rssreader.watchdetails.presentation.WatchDetailsStateType.*
 import com.mukiva.rssreader.watchdetails.presentation.WatchDetailsStateType
 import com.mukiva.rssreader.watchdetails.presentation.WatchDetailsViewModel
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.launch
 import java.util.*
 
 @FlowPreview
@@ -93,7 +95,9 @@ class NewsDetailsFragment : Fragment(R.layout.fragment_watch_details) {
         val bundle = requireArguments()
         val itemId = bundle.getLong(ARG_ITEM_ID)
 
-        _viewModel.setNews(itemId)
+        lifecycleScope.launch {
+            _viewModel.setNews(itemId)
+        }
     }
 
     private fun setButtonLink(link: String) {

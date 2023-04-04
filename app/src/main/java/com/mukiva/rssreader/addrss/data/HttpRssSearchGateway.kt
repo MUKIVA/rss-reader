@@ -1,6 +1,6 @@
 package com.mukiva.rssreader.addrss.data
 
-import com.mukiva.rssreader.addrss.data.parsing.RssParsingService
+import com.mukiva.rssreader.addrss.data.parsing.RssParser
 import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
 import com.mukiva.rssreader.okhttp.AsyncCallCallbacks
 import com.mukiva.rssreader.okhttp.BaseOkHttpSource
@@ -36,7 +36,7 @@ class HttpRssSearchGateway : BaseOkHttpSource(
     }
 ), RssSearchGateway {
 
-    private val _rssParser = RssParsingService()
+    private val _rssParser = RssParser()
 
     companion object {
         const val TIMEOUT: Long = 15000
@@ -49,15 +49,13 @@ class HttpRssSearchGateway : BaseOkHttpSource(
             .build()
 
         return withTimeout(TIMEOUT) {
+            withContext(Dispatchers.IO) {
+                val response = client.newCall(request).suspendEnqueue()
 
-            val response = client.newCall(request).suspendEnqueue()
+                if (!response.isSuccessful)
+                    throw Exception("Unknown error")
 
-            if (!response.isSuccessful)
-                throw Exception("Unknown error")
-
-            return@withTimeout withContext(Dispatchers.IO) {
-                val rss: Rss = _rssParser.parse(response.body!!.byteStream()).copy(refreshLink = link)
-                rss
+                _rssParser.parse(response.body!!.byteStream()).copy(refreshLink = link)
             }
         }
     }

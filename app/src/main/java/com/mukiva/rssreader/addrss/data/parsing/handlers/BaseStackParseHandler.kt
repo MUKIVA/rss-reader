@@ -1,9 +1,9 @@
 package com.mukiva.rssreader.addrss.data.parsing.handlers
 
-import com.mukiva.rssreader.addrss.data.parsing.StackParsingService
+import com.mukiva.rssreader.addrss.data.parsing.StackParser
 
 abstract class BaseStackParseHandler(
-    private val _context: StackParsingService
+    private val _context: StackParser
 ) : ParseXmlHandler {
 
     override fun handleStartTag(tag: String) {

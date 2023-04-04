@@ -5,7 +5,7 @@ import com.mukiva.rssreader.addrss.data.parsing.elements.Channel
 import com.mukiva.rssreader.addrss.data.parsing.elements.Cloud
 
 class ChannelParseHandler(
-    private val _context: com.mukiva.rssreader.addrss.data.parsing.StackParsingService,
+    private val _context: com.mukiva.rssreader.addrss.data.parsing.StackParser,
     private val _resultSetter: (Channel) -> Unit
 ) : Rss2StackHandler(_context) {
 

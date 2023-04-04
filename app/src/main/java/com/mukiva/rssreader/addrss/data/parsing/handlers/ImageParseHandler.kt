@@ -3,7 +3,7 @@ package com.mukiva.rssreader.addrss.data.parsing.handlers
 import com.mukiva.rssreader.addrss.data.parsing.elements.Image
 
 class ImageParseHandler(
-    _context : com.mukiva.rssreader.addrss.data.parsing.StackParsingService,
+    _context : com.mukiva.rssreader.addrss.data.parsing.StackParser,
     private val _resultSetter : (Image) -> Unit
 ) : Rss2StackHandler(_context) {
 

@@ -7,7 +7,7 @@ import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream
 import java.util.Stack
 
-class RssParsingService : XmlParsingService<Rss>(), StackParsingService {
+class RssParser : XmlParer<Rss>(), StackParser {
 
     private val _tagStack = Stack<String>()
     private val _handlerStack = Stack<ParseXmlHandler>()
@@ -21,8 +21,7 @@ class RssParsingService : XmlParsingService<Rss>(), StackParsingService {
         _handlerStack.add(RssParseHandler(this) {
             _rss = it
         })
-        parser.setInput(stream, null)
-
+        parser.setInput(stream, "UTF-8")
         while (parser.eventType != XmlPullParser.END_DOCUMENT) {
 
             when (parser.eventType) {
@@ -34,6 +33,7 @@ class RssParsingService : XmlParsingService<Rss>(), StackParsingService {
                     _handlerStack.peek().handleEndTag(parser.name)
                 XmlPullParser.CDSECT ->
                     _handlerStack.peek().handleText(parser.text, _tagStack.peek())
+                else -> {}
             }
 
             parser.nextToken()

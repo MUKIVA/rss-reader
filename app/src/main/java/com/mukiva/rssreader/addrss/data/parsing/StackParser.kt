@@ -2,7 +2,7 @@ package com.mukiva.rssreader.addrss.data.parsing
 
 import com.mukiva.rssreader.addrss.data.parsing.handlers.ParseXmlHandler
 
-interface StackParsingService {
+interface StackParser {
     fun addHandler(handler: ParseXmlHandler)
     fun popHandler(): ParseXmlHandler
     fun addTag(tag: String)

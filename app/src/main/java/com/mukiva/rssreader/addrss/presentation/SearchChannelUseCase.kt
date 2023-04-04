@@ -26,7 +26,10 @@ class SearchChannelUseCase(
             when (e) {
                 is TimeoutCancellationException -> Error(TimeoutError)
                 is IOException -> Error(ConnectionError)
-                else -> Error(UnknownError)
+                else -> {
+                    println(e.message)
+                    Error(UnknownError)
+                }
             }
         }
     }
