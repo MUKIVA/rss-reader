@@ -58,10 +58,6 @@ class FeedListViewModel(
         }
     }
 
-    fun getFeeds(): List<FeedSummary> {
-        return getState().feeds.toList()
-    }
-
     fun loadFeeds() {
         viewModelScope.launch {
             modifyState(getState().copy(stateType = FeedStateType.LOADING))

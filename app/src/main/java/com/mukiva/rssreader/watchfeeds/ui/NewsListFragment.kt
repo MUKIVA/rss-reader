@@ -103,7 +103,6 @@ class NewsListFragment(
     }
 
     private fun render(state: NewsListState) {
-        println("RENDER_NEWS ${state.stateType}")
         when (state.stateType) {
             NewsListStateType.EMPTY -> renderEmptyState()
             NewsListStateType.LOADING -> renderLoadingState()
