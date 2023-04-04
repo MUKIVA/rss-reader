@@ -23,6 +23,7 @@ import com.mukiva.rssreader.watchfeeds.presentation.NewsListStateType
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @FlowPreview
 class NewsListFragment(
@@ -45,8 +46,17 @@ class NewsListFragment(
         observeViewModel()
     }
 
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch {
+            _viewModel.loadData()
+        }
+    }
+
     private fun refresh() {
-        _viewModel.refresh()
+        lifecycleScope.launch {
+            _viewModel.refresh()
+        }
     }
 
     private fun initActions() {

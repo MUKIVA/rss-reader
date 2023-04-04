@@ -28,6 +28,7 @@ import com.mukiva.rssreader.watchfeeds.presentation.*
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
 class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
@@ -39,15 +40,21 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         object : WatchFeedsMenuProviderActions {
 
             override fun deleteFeed() {
-                _viewModel.triggerDeleteFeed(_binding.tabLayout.selectedTabPosition)
+                lifecycleScope.launch {
+                    _viewModel.triggerDeleteFeed(_binding.tabLayout.selectedTabPosition)
+                }
             }
 
             override fun addFeed() {
-                _viewModel.triggerAddFeed()
+                lifecycleScope.launch {
+                    _viewModel.triggerAddFeed()
+                }
             }
 
             override fun aboutFeed() {
-                _viewModel.triggerAboutFeedDialog(_binding.feedViewPager.currentItem)
+                lifecycleScope.launch {
+                    _viewModel.triggerAboutFeedDialog(_binding.feedViewPager.currentItem)
+                }
             }
         }
     )
@@ -63,15 +70,19 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
 
     override fun onResume() {
         super.onResume()
-        initActions()
-        _viewModel.loadFeeds()
+        lifecycleScope.launch {
+            initActions()
+            _viewModel.loadFeeds()
+        }
     }
 
     private fun initActions() {
         with (_binding.feedEmpty.addRssFeed.getFragment<AddRssFragment>()) {
             setBtnListener {
-                getViewModel().addRss()
-                _viewModel.loadFeeds()
+                lifecycleScope.launch {
+                    getViewModel().addRss()
+                    _viewModel.loadFeeds()
+                }
         } }
     }
 
@@ -184,7 +195,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
 
     private fun handleDialogResponse(response: Int, item: FeedSummary) {
         when (response) {
-            DialogInterface.BUTTON_POSITIVE -> {
+            DialogInterface.BUTTON_POSITIVE -> lifecycleScope.launch {
                 _viewModel.deleteFeed(item.id)
             }
         }

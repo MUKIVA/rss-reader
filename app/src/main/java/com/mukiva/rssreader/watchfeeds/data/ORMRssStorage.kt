@@ -8,7 +8,6 @@ import com.mukiva.rssreader.addrss.data.parsing.entity.ItemEntity
 import com.mukiva.rssreader.watchfeeds.converters.RssConverter
 import io.objectbox.BoxStore
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 
 class ORMRssStorage(
@@ -20,50 +19,60 @@ class ORMRssStorage(
     private val _converter = RssConverter()
 
     override suspend fun update(rss: Rss, id: Long): Channel {
-        val entity = _channelBox[id]
-        entity.items.clear()
-        entity.items.applyChangesToDb()
-        rss.channel.items.forEach { entity.items.add(createItemEntity(it)) }
-        _channelBox.put(entity.copy(
-            title = rss.channel.title,
-            link = rss.channel.link,
-            description = rss.channel.description,
-            imageUrl = rss.channel.image?.url
-        ))
-        entity.items.applyChangesToDb()
-        return _converter.entityToChannel(_channelBox[id])
+        return withContext(Dispatchers.IO) {
+            val entity = _channelBox[id]
+            entity.items.clear()
+            entity.items.applyChangesToDb()
+            rss.channel.items.forEach { entity.items.add(createItemEntity(it)) }
+            _channelBox.put(entity.copy(
+                title = rss.channel.title,
+                link = rss.channel.link,
+                description = rss.channel.description,
+                imageUrl = rss.channel.image?.url
+            ))
+            entity.items.applyChangesToDb()
+            _converter.entityToChannel(_channelBox[id])
+        }
     }
 
     override suspend fun delete(id: Long): List<Channel> {
-        _channelBox.remove(id)
-        return getAllRss()
+        return withContext(Dispatchers.IO) {
+            _channelBox.remove(id)
+            getAllRss()
+        }
     }
 
     override suspend fun add(rss: Rss): List<Channel> {
-        val entity = createChannel(rss)
-        rss.channel.items.forEach { entity.items.add(createItemEntity(it)) }
-        _channelBox.put(entity)
-        return getAllRss()
+        return withContext(Dispatchers.IO) {
+            val entity = createChannel(rss)
+            rss.channel.items.forEach { entity.items.add(createItemEntity(it)) }
+            _channelBox.put(entity)
+            getAllRss()
+        }
     }
 
     override suspend fun getAllRss(): List<Channel> {
-        return _channelBox.all.map { _converter.entityToChannel(it) }
+        return withContext(Dispatchers.IO) {
+            _channelBox.all.map { _converter.entityToChannel(it) }
+        }
     }
 
     override suspend fun getItems(id: Long): List<Item> {
-        return _channelBox[id].items.map { _converter.entityToItem(it) }
+        return withContext(Dispatchers.IO) {
+            _channelBox[id].items.map { _converter.entityToItem(it) }
+        }
     }
 
     override suspend fun getRss(id: Long): Channel {
-        val entity = _channelBox[id]
-        return _converter.entityToChannel(entity)
+        return withContext(Dispatchers.IO) {
+            val entity = _channelBox[id]
+            _converter.entityToChannel(entity)
+        }
     }
 
     override suspend fun getItem(id: Long): Item {
-        return  coroutineScope {
-            withContext(Dispatchers.IO) {
-                _converter.entityToItem(_itemBox[id])
-            }
+        return withContext(Dispatchers.IO) {
+            _converter.entityToItem(_itemBox[id])
         }
     }
 

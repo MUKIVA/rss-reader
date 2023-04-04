@@ -5,11 +5,11 @@ import com.mukiva.rssreader.R
 import com.mukiva.rssreader.addrss.data.RssSearchGateway
 import com.mukiva.rssreader.addrss.data.parsing.elements.Channel
 import com.mukiva.rssreader.addrss.data.parsing.elements.Item
+import com.mukiva.rssreader.addrss.domain.*
 import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
 import com.mukiva.rssreader.watchfeeds.data.RssStorage
 import com.mukiva.rssreader.watchfeeds.domain.News
 import kotlinx.coroutines.launch
-import com.mukiva.rssreader.addrss.domain.*
 
 class NewsListViewModel(
     val id: Long,
@@ -23,11 +23,7 @@ class NewsListViewModel(
     )
 ) {
 
-    init {
-        loadData()
-    }
-
-    private fun loadData() {
+    fun loadData() {
         viewModelScope.launch {
             val state = getState()
             val news = _rssStorage.getItems(state.id).map {
@@ -40,14 +36,12 @@ class NewsListViewModel(
         }
     }
 
-    fun refresh() {
-        viewModelScope.launch {
-            val id = getState().id
+    suspend fun refresh() {
+        val id = getState().id
 
-            when (val result = RefreshChannelUseCase(_rssStorage, _rssSearchService).invoke(id)) {
-                is Error -> handleErrorRefresh(result.error)
-                is Success<Channel> -> handleSuccessRefresh(result.data)
-            }
+        when (val result = RefreshChannelUseCase(_rssStorage, _rssSearchService).invoke(id)) {
+            is Error -> handleErrorRefresh(result.error)
+            is Success<Channel> -> handleSuccessRefresh(result.data)
         }
     }
 
