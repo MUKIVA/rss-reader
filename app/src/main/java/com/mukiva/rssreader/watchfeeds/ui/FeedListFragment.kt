@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -62,13 +63,15 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         }
     )
 
+    companion object {
+        const val ADAPTER_STATE = "ADAPTER_STATE"
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initFields(view)
         observeViewModel()
+        initFields(view, savedInstanceState)
         initPager()
-
-        render(_viewModel.state.value!!)
     }
 
     override fun onResume() {
@@ -78,6 +81,11 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
             initActions()
             _viewModel.loadFeeds()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelableArrayList(ADAPTER_STATE, ArrayList(_adapter.feedSummaries))
     }
 
     private fun initActions() {
@@ -91,12 +99,16 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         } }
     }
 
-    private fun initFields(view: View) {
+    private fun initFields(view: View, state: Bundle?) {
         _binding = FragmentWatchFeedsBinding.bind(view)
-        _adapter = NewsListFragmentAdapter(
-            childFragmentManager,
-            viewLifecycleOwner.lifecycle
-        )
+
+        val data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            state?.getParcelableArrayList(ADAPTER_STATE, FeedSummary::class.java)
+        } else {
+            state?.getParcelableArrayList(ADAPTER_STATE)
+        }
+
+        _adapter = NewsListFragmentAdapter(this, data?.toList() ?: listOf())
         _inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     }
 

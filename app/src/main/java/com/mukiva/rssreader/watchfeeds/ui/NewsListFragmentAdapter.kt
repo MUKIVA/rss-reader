@@ -1,8 +1,6 @@
 package com.mukiva.rssreader.watchfeeds.ui
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.mukiva.rssreader.watchfeeds.domain.FeedSummary
@@ -10,11 +8,11 @@ import kotlinx.coroutines.FlowPreview
 
 @FlowPreview
 class NewsListFragmentAdapter(
-    fm: FragmentManager,
-    lifecycle: Lifecycle
-) : FragmentStateAdapter(fm, lifecycle) {
+    parent: Fragment,
+    initializeState: List<FeedSummary> = listOf()
+) : FragmentStateAdapter(parent) {
 
-    var feedSummaries: List<FeedSummary> = emptyList()
+    var feedSummaries: List<FeedSummary> = initializeState
         set (value) {
             val diffCallback = FeedFragmentDiffUtilCallback(field, value)
             val diffResult = DiffUtil.calculateDiff(diffCallback)
