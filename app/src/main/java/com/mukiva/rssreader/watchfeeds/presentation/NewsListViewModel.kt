@@ -56,12 +56,13 @@ class NewsListViewModel(
         )
     }
 
-    private fun handleSuccessRefresh(channel: Channel) {
+    private suspend fun handleSuccessRefresh(channel: Channel) {
         val news = channel.items.map { itemToNews(it) }
         modifyState(getState().copy(
             stateType = getStateType(news),
             news = news
         ))
+        event(NewsListEvents.RefreshSuccessEvent)
     }
 
     private fun handleErrorRefresh(err: SearchError) {

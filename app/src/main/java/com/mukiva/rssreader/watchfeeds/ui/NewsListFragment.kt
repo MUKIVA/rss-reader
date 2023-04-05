@@ -97,6 +97,7 @@ class NewsListFragment(
     private fun handleEvents(evt: NewsListEvents) {
         when (evt) {
             is NewsListEvents.RefreshErrorEvent -> sendToast(evt.msgId)
+            is NewsListEvents.RefreshSuccessEvent -> _binding.recyclerView.scrollToPosition(0)
         }
     }
 
