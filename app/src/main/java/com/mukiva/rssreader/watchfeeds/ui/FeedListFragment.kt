@@ -136,7 +136,11 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         _binding.feedEmpty.root.isVisible = false
         _binding.feedViewPager.isVisible = true
         _binding.tabLayout.isVisible = true
+
+        val oldCount = _adapter.itemCount
         _adapter.feedSummaries = state.feeds.toList()
+        if (oldCount < state.feeds.size)
+            _binding.feedViewPager.setCurrentItem(oldCount, false)
     }
 
     private fun renderEmptyState(state: FeedState) {
