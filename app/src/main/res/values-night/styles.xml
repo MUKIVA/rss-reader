@@ -15,12 +15,24 @@
         <item name="strokeColor">@color/purple_500</item>
     </style>
 
-    <style name="Widget.RSSReader.BottomSheet.Modal" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="shapeAppearance">@style/ShapeAppearance.RSSReader.LargeComponent</item>
+<!--    <style name="ThemeOverlay.RSSReader.BottomSheet" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">-->
+<!--        <item name="shapeAppearance">@style/Widget.RSSReader.BottomSheetDialog</item>-->
+<!--    </style>-->
+
+<!--    <style name="Widget.RSSReader.BottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet">-->
+<!--        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.RSSReader.BottomSheetDialog</item>-->
+<!--    </style>-->
+
+<!--    <style name="ShapeAppearanceOverlay.RSSReader.BottomSheetDialog" parent="">-->
+<!--            <item name="cornerRadius">24dp</item>-->
+<!--    </style>-->
+
+    <style name="Theme.RSSReader.BottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.RSSReader.BottomSheetDialog</item>
     </style>
 
-    <style name="ShapeAppearance.RSSReader.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">24dp</item>
+    <style name="Widget.RSSReader.BottomSheetDialog" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_bottom_sheet_dialog</item>
     </style>
+
 </resources>

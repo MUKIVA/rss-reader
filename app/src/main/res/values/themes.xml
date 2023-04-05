@@ -10,9 +10,10 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">?attr/colorSurfaceVariant</item>
+        <!-- Customize your theme here. -->
         <item name="materialButtonStyle">@style/Widget.RSSReader.Button</item>
-        <item name="bottomSheetDialogTheme">@style/Theme.RSSReader.BottomSheetOverlay</item>
+        <item name="bottomSheetDialogTheme">@style/Theme.RSSReader.BottomSheetDialog</item>
     </style>
 
     <style name="Base.Theme.RSSReader" parent="Base.V21.Theme.RSSReader" />
@@ -23,10 +24,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-    <style name="Theme.RSSReader.BottomSheetOverlay" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/Widget.RSSReader.BottomSheet.Modal</item>
     </style>
 
     <style name="Theme.RSSReader.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
