@@ -3,12 +3,14 @@
 package com.mukiva.rssreader.watchfeeds.ui
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.view.MenuHost
 import androidx.core.view.isVisible
@@ -35,6 +37,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
     private val _viewModel: FeedListViewModel by viewModels { factory() }
     private lateinit var _binding: FragmentWatchFeedsBinding
     private lateinit var _adapter: NewsListFragmentAdapter
+    private lateinit var _inputMethodManager: InputMethodManager
 
     private val _menuProvider = WatchFeedsMenuProvider(
         object : WatchFeedsMenuProviderActions {
@@ -81,6 +84,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
             setBtnListener {
                 lifecycleScope.launch {
                     getViewModel().addRss()
+                    _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
                     _viewModel.loadFeeds()
                 }
         } }
@@ -92,6 +96,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
             childFragmentManager,
             viewLifecycleOwner.lifecycle
         )
+        _inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     }
 
     private fun observeViewModel() {

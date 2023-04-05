@@ -2,9 +2,12 @@
 
 package com.mukiva.rssreader.addrss.ui
 
+import android.annotation.SuppressLint
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +23,7 @@ import kotlinx.coroutines.launch
 
 class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
     private lateinit var _binding: FragmentAddRssBinding
+    private lateinit var _inputMethodManager: InputMethodManager
     private val _viewModel: AddRssViewModel by viewModels { factory() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,6 +35,10 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
     override fun onStart() {
         super.onStart()
         initActions()
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     fun getViewModel(): AddRssViewModel = _viewModel
@@ -50,13 +58,16 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
         _binding.searchField.setBtnListener {
             lifecycleScope.launch {
                 _viewModel.addRss()
+                _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
                 findNavController().navigateUp()
             }
         }
     }
 
+    @SuppressLint("ServiceCast")
     private fun initFields(view: View) {
         _binding = FragmentAddRssBinding.bind(view)
+        _inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
     }
 
     private fun observeViewModel() {
