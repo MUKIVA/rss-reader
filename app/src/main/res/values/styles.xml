@@ -6,26 +6,16 @@
     </style>
 
     <style name="Widget.RSSReader.Button" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">14dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
         <item name="android:textSize">14sp</item>
     </style>
 
     <style name="Widget.RSSReader.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="cornerRadius">14dp</item>
         <item name="strokeColor">@color/purple_500</item>
     </style>
-
-<!--    <style name="ThemeOverlay.RSSReader.BottomSheet" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">-->
-<!--        <item name="shapeAppearance">@style/Widget.RSSReader.BottomSheetDialog</item>-->
-<!--    </style>-->
-
-<!--    <style name="Widget.RSSReader.BottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet">-->
-<!--        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.RSSReader.BottomSheetDialog</item>-->
-<!--    </style>-->
-
-<!--    <style name="ShapeAppearanceOverlay.RSSReader.BottomSheetDialog" parent="">-->
-<!--        <item name="cornerRadius">24dp</item>-->
-<!--    </style>-->
 
     <style name="Theme.RSSReader.BottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/Widget.RSSReader.BottomSheetDialog</item>
