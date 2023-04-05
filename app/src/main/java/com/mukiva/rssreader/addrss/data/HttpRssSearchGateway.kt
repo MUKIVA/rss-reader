@@ -6,35 +6,16 @@ import com.mukiva.rssreader.okhttp.AsyncCallCallbacks
 import com.mukiva.rssreader.okhttp.BaseOkHttpSource
 import kotlinx.coroutines.*
 import okhttp3.Call
+import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class HttpRssSearchGateway : BaseOkHttpSource(
-    object : AsyncCallCallbacks {
-        override fun onCancel(continuation: CancellableContinuation<Response>) {
-            continuation.cancel()
-        }
-
-        override fun onFail(
-            call: Call,
-            e: IOException,
-            continuation: CancellableContinuation<Response>
-        ) {
-            continuation.resumeWithException(e)
-        }
-
-        override fun onSuccess(
-            call: Call,
-            response: Response,
-            continuation: CancellableContinuation<Response>
-        ) {
-            continuation.resume(response)
-        }
-    }
-), RssSearchGateway {
+class HttpRssSearchGateway(
+    private val _client: OkHttpClient
+) : BaseOkHttpSource(), RssSearchGateway {
 
     private val _rssParser = RssParser()
 
@@ -50,7 +31,28 @@ class HttpRssSearchGateway : BaseOkHttpSource(
 
         return withTimeout(TIMEOUT) {
             withContext(Dispatchers.IO) {
-                val response = client.newCall(request).suspendEnqueue()
+                val response = _client.newCall(request).suspendEnqueue(object : AsyncCallCallbacks {
+                    override fun onCancel(continuation: CancellableContinuation<Response>) {
+                        continuation.cancel()
+                    }
+
+                    override fun onFail(
+                        call: Call,
+                        e: IOException,
+                        continuation: CancellableContinuation<Response>
+                    ) {
+                        continuation.resumeWithException(e)
+                    }
+
+                    override fun onSuccess(
+                        call: Call,
+                        response: Response,
+                        continuation: CancellableContinuation<Response>
+                    ) {
+                        continuation.resume(response)
+                    }
+
+                })
 
                 if (!response.isSuccessful)
                     throw Exception("Unknown error")
