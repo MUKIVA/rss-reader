@@ -26,7 +26,6 @@
     <string name="empty_rss_feed">В ленте еще нет новостей</string>
     <string name="fail_get_data_text">При получении данных возникла ошибка</string>
     <string name="repeat">Повторить</string>
-    <string name="share">Share</string>
     <string name="menu_about_feed">Информация о ленте</string>
     <string name="menu_add_feed">Добавить ленту</string>
     <string name="menu_delete_feed">Удалить ленту</string>
@@ -37,5 +36,8 @@
     <string name="search_time_out_error">Превышено время ожидания</string>
     <string name="search_already_added_error">Rss лента уже добавлена</string>
     <string name="refresh_unknown_error">Неизвестная ошибка</string>
+    <string name="share_ic_text">Поделиться</string>
+    <string name="header_new_rss">Новая лента</string>
+
 
 </resources>

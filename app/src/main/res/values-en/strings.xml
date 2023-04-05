@@ -12,7 +12,6 @@
     <string name="empty_rss_feed">No news in the feed yet</string>
     <string name="fail_get_data_text">An error occurred when receiving the data</string>
     <string name="repeat">Repeat</string>
-    <string name="share">Share</string>
     <string name="menu_about_feed">about feed</string>
     <string name="menu_add_feed">add feed</string>
     <string name="menu_delete_feed">delete the rss feed</string>
@@ -23,4 +22,6 @@
     <string name="search_time_out_error">Exceeded waiting time</string>
     <string name="search_already_added_error">Rss feed already added</string>
     <string name="refresh_unknown_error">Unknown error</string>
+    <string name="share_ic_text">Share</string>
+    <string name="header_new_rss">New rss-feed</string>
 </resources>

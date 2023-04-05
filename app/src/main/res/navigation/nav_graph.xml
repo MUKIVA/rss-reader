@@ -34,6 +34,6 @@
     <fragment
         android:id="@+id/addRssFragment"
         android:name="com.mukiva.rssreader.addrss.ui.AddRssFragment"
-        android:label="Новая лента"
+        android:label="@string/header_new_rss"
         tools:layout="@layout/fragment_add_rss" />
 </navigation>
