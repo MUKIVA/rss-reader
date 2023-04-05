@@ -73,6 +73,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
 
     override fun onResume() {
         super.onResume()
+        _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
         lifecycleScope.launch {
             initActions()
             _viewModel.loadFeeds()
