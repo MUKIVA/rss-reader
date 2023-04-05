@@ -7,6 +7,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.addrss.domain.Feed
 import com.mukiva.rssreader.databinding.ViewSearchRssBinding
@@ -47,7 +49,7 @@ class SearchRssView
             rssItemTitleText.text = item.title
             rssItemDescriptionText.text = item.description
 
-            item.imageLink?.let { setImage(it) }
+            setImage(item.imageLink)
         }
     }
 
@@ -87,10 +89,11 @@ class SearchRssView
         _binding.searchRssField.text.clear()
     }
 
-    private fun setImage(link: String) {
-        if (link.trim().isEmpty()) return
+    private fun setImage(link: String?) {
         Glide.with(this)
-             .load(link)
-             .into(_binding.rssItemImage)
+            .load(link)
+            .placeholder(R.drawable.ic_no_image)
+            .transform(CenterCrop(), RoundedCorners(14))
+            .into(_binding.rssItemImage)
     }
 }
