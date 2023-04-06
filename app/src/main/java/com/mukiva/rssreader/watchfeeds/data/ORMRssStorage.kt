@@ -6,6 +6,7 @@ import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
 import com.mukiva.rssreader.addrss.data.parsing.entity.ChannelEntity
 import com.mukiva.rssreader.addrss.data.parsing.entity.ItemEntity
 import com.mukiva.rssreader.watchfeeds.converters.RssConverter
+import com.mukiva.rssreader.watchfeeds.domain.RssStorage
 import io.objectbox.BoxStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

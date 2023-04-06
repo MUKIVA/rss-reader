@@ -3,8 +3,8 @@ package com.mukiva.rssreader.watchdetails.presentation
 import android.os.Build
 import android.text.Html
 import androidx.lifecycle.viewModelScope
-import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
-import com.mukiva.rssreader.watchfeeds.data.RssStorage
+import com.mukiva.rssreader.utils.viewmodel.SingleStateViewModel
+import com.mukiva.rssreader.watchfeeds.domain.RssStorage
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*

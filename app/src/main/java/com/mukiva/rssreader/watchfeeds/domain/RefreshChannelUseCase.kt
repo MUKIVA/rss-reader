@@ -1,10 +1,9 @@
-package com.mukiva.rssreader.watchfeeds.presentation
+package com.mukiva.rssreader.watchfeeds.domain
 
 import com.mukiva.rssreader.addrss.data.RssSearchGateway
 import com.mukiva.rssreader.addrss.data.parsing.elements.Channel
 import com.mukiva.rssreader.addrss.domain.*
 import com.mukiva.rssreader.addrss.domain.UnknownError
-import com.mukiva.rssreader.watchfeeds.data.RssStorage
 import kotlinx.coroutines.TimeoutCancellationException
 import okio.IOException
 

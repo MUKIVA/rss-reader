@@ -5,7 +5,7 @@ import com.mukiva.rssreader.addrss.data.HttpRssSearchGateway
 import com.mukiva.rssreader.addrss.data.RssSearchGateway
 import com.mukiva.rssreader.addrss.data.parsing.entity.MyObjectBox
 import com.mukiva.rssreader.watchfeeds.data.ORMRssStorage
-import com.mukiva.rssreader.watchfeeds.data.RssStorage
+import com.mukiva.rssreader.watchfeeds.domain.RssStorage
 import io.objectbox.BoxStore
 import okhttp3.OkHttpClient
 import timber.log.Timber

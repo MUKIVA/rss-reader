@@ -3,8 +3,8 @@ package com.mukiva.rssreader.watchfeeds.presentation
 import androidx.lifecycle.viewModelScope
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.addrss.data.parsing.elements.Channel
-import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
-import com.mukiva.rssreader.watchfeeds.data.RssStorage
+import com.mukiva.rssreader.utils.viewmodel.SingleStateViewModel
+import com.mukiva.rssreader.watchfeeds.domain.RssStorage
 import com.mukiva.rssreader.watchfeeds.domain.FeedSummary
 import kotlinx.coroutines.launch
 

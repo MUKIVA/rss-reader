@@ -1,9 +1,7 @@
-package com.mukiva.rssreader.addrss.presentation
+package com.mukiva.rssreader.addrss.domain
 
 import com.mukiva.rssreader.addrss.data.RssSearchGateway
 import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
-import com.mukiva.rssreader.addrss.domain.*
-import com.mukiva.rssreader.addrss.domain.UnknownError
 import kotlinx.coroutines.TimeoutCancellationException
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okio.IOException

@@ -2,8 +2,8 @@ package com.mukiva.rssreader.addrss.data
 
 import com.mukiva.rssreader.addrss.data.parsing.RssParser
 import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
-import com.mukiva.rssreader.okhttp.AsyncCallCallbacks
-import com.mukiva.rssreader.okhttp.BaseOkHttpSource
+import com.mukiva.rssreader.utils.okhttp.AsyncCallCallbacks
+import com.mukiva.rssreader.utils.okhttp.BaseOkHttpSource
 import kotlinx.coroutines.*
 import okhttp3.Call
 import okhttp3.OkHttpClient

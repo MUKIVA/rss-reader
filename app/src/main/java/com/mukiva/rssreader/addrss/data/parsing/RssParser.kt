@@ -4,13 +4,17 @@ import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
 import com.mukiva.rssreader.addrss.data.parsing.handlers.ParseXmlHandler
 import com.mukiva.rssreader.addrss.data.parsing.handlers.RssParseHandler
 import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserFactory
 import java.io.InputStream
 import java.util.Stack
 
-class RssParser : XmlParer<Rss>(), StackParser {
+class RssParser : Parser, StackParser {
 
     private val _tagStack = Stack<String>()
     private val _handlerStack = Stack<ParseXmlHandler>()
+    private val _parser: XmlPullParser = XmlPullParserFactory
+        .newInstance()
+        .newPullParser()
 
     private var _rss: Rss? = null
 
@@ -21,22 +25,22 @@ class RssParser : XmlParer<Rss>(), StackParser {
         _handlerStack.add(RssParseHandler(this) {
             _rss = it
         })
-        parser.setInput(stream, null)
-        while (parser.eventType != XmlPullParser.END_DOCUMENT) {
+        _parser.setInput(stream, null)
+        while (_parser.eventType != XmlPullParser.END_DOCUMENT) {
 
-            when (parser.eventType) {
+            when (_parser.eventType) {
                 XmlPullParser.START_TAG ->
-                    _handlerStack.peek().handleStartTag(parser.name)
+                    _handlerStack.peek().handleStartTag(_parser.name)
                 XmlPullParser.TEXT ->
-                    _handlerStack.peek().handleText(parser.text, _tagStack.peek())
+                    _handlerStack.peek().handleText(_parser.text, _tagStack.peek())
                 XmlPullParser.END_TAG ->
-                    _handlerStack.peek().handleEndTag(parser.name)
+                    _handlerStack.peek().handleEndTag(_parser.name)
                 XmlPullParser.CDSECT ->
-                    _handlerStack.peek().handleText(parser.text, _tagStack.peek())
+                    _handlerStack.peek().handleText(_parser.text, _tagStack.peek())
                 else -> {}
             }
 
-            parser.nextToken()
+            _parser.nextToken()
         }
         return _rss ?: throw IllegalStateException()
     }
@@ -59,11 +63,10 @@ class RssParser : XmlParer<Rss>(), StackParser {
 
     override fun getAttr(namespace: String, attr: String): String? {
         return try {
-            parser.getAttributeValue(namespace, attr)
+            _parser.getAttributeValue(namespace, attr)
         } catch (e: Exception) {
             null
         }
-
     }
 }
 

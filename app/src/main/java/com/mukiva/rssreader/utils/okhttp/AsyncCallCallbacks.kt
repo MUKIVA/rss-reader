@@ -1,4 +1,4 @@
-package com.mukiva.rssreader.okhttp
+package com.mukiva.rssreader.utils.okhttp
 
 import kotlinx.coroutines.CancellableContinuation
 import okhttp3.Call

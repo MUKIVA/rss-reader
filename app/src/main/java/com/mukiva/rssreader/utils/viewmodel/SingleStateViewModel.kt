@@ -1,4 +1,4 @@
-package com.mukiva.rssreader.core.viewmodel
+package com.mukiva.rssreader.utils.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

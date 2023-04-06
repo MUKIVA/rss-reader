@@ -1,4 +1,4 @@
-package com.mukiva.rssreader.watchfeeds.data
+package com.mukiva.rssreader.watchfeeds.domain
 
 import com.mukiva.rssreader.addrss.data.parsing.elements.Channel
 import com.mukiva.rssreader.addrss.data.parsing.elements.Item

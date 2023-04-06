@@ -6,9 +6,10 @@ import com.mukiva.rssreader.addrss.data.RssSearchGateway
 import com.mukiva.rssreader.addrss.data.parsing.elements.Channel
 import com.mukiva.rssreader.addrss.data.parsing.elements.Item
 import com.mukiva.rssreader.addrss.domain.*
-import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
-import com.mukiva.rssreader.watchfeeds.data.RssStorage
+import com.mukiva.rssreader.utils.viewmodel.SingleStateViewModel
+import com.mukiva.rssreader.watchfeeds.domain.RssStorage
 import com.mukiva.rssreader.watchfeeds.domain.News
+import com.mukiva.rssreader.watchfeeds.domain.RefreshChannelUseCase
 import kotlinx.coroutines.launch
 
 class NewsListViewModel(

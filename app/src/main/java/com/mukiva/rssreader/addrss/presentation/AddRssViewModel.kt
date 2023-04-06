@@ -6,8 +6,8 @@ import com.mukiva.rssreader.addrss.data.RssSearchGateway
 import com.mukiva.rssreader.addrss.data.parsing.elements.Rss
 import com.mukiva.rssreader.addrss.domain.*
 import com.mukiva.rssreader.addrss.domain.UnknownError
-import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
-import com.mukiva.rssreader.watchfeeds.data.RssStorage
+import com.mukiva.rssreader.utils.viewmodel.SingleStateViewModel
+import com.mukiva.rssreader.watchfeeds.domain.RssStorage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.debounce
