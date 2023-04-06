@@ -10,6 +10,7 @@ import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.addrss.di.factory
@@ -18,6 +19,7 @@ import com.mukiva.rssreader.addrss.presentation.AddRssStateType
 import com.mukiva.rssreader.databinding.FragmentAddRssBinding
 import com.mukiva.rssreader.addrss.presentation.AddRssViewModel
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.launch
 
 class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
     private lateinit var _binding: FragmentAddRssBinding
@@ -48,7 +50,9 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
         }
 
         _binding.searchField.setBtnListener {
-            _viewModel.addRss()
+            lifecycleScope.launch {
+                _viewModel.addRss()
+            }
             _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
             findNavController().navigateUp()
         }

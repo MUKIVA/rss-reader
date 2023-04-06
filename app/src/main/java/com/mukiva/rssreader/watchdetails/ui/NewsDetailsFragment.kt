@@ -111,6 +111,8 @@ class NewsDetailsFragment : Fragment(R.layout.fragment_watch_details) {
         _viewModel.state.observe(viewLifecycleOwner, ::render)
     }
 
+
+
     private fun render(state: WatchDetailsState) {
         when (state.stateType) {
             NORMAL -> renderNormalState(state)

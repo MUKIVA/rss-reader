@@ -65,13 +65,19 @@ class FeedListViewModel(
         }
     }
 
-    suspend fun loadFeeds() {
+    fun loadFeeds() {
         modifyState(getState().copy(stateType = FeedStateType.LOADING))
-        val feeds = _rssStorage.getAllRss().map { createFeedSummary(it) }
-        modifyState(getState().copy(
-            stateType = getFeedStateType(feeds),
-            feeds = feeds
-        ))
+        viewModelScope.launch {
+            val feeds = _rssStorage.getAllRss().map { createFeedSummary(it) }
+            val oldSize = getState().feeds.size
+            modifyState(getState().copy(
+                stateType = getFeedStateType(feeds),
+                feeds = feeds
+            ))
+
+            if (feeds.size > oldSize)
+                event(FeedEvents.NewRssAdded(oldSize))
+        }
     }
 
     private fun getFeedStateType(feeds: List<FeedSummary>): FeedStateType {

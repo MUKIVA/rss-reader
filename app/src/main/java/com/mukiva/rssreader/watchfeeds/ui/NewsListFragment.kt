@@ -24,7 +24,6 @@ import com.mukiva.rssreader.watchfeeds.presentation.NewsListStateType
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 @FlowPreview
 class NewsListFragment : Fragment(R.layout.fragment_news_list) {
@@ -57,6 +56,11 @@ class NewsListFragment : Fragment(R.layout.fragment_news_list) {
         _position = requireArguments().getInt(ARG_POSITION)
     }
 
+    override fun onResume() {
+        super.onResume()
+        _viewModel.loadData()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -65,14 +69,6 @@ class NewsListFragment : Fragment(R.layout.fragment_news_list) {
         initActions()
         initRefreshLayouts()
         observeViewModel()
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-        lifecycleScope.launch {
-            _viewModel.loadData()
-        }
     }
 
     fun setPositionChangeListener(listener: (Int) -> Unit) {
@@ -108,12 +104,10 @@ class NewsListFragment : Fragment(R.layout.fragment_news_list) {
         _binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                lifecycleScope.launch {
-                    val maxOffset = recyclerView.computeVerticalScrollRange()
-                    val offset = recyclerView.computeVerticalScrollOffset()
-                    _position = offset / (maxOffset / _adapter.items.size)
-                    _positionListener?.invoke(_position)
-                }
+                val maxOffset = recyclerView.computeVerticalScrollRange()
+                val offset = recyclerView.computeVerticalScrollOffset()
+                _position = offset / (maxOffset / _adapter.items.size)
+                _positionListener?.invoke(_position)
             }
         })
     }

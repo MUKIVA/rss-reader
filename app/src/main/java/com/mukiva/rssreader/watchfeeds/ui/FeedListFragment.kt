@@ -57,13 +57,6 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         }
     )
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        lifecycleScope.launch {
-            _viewModel.loadFeeds()
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initFields(view)
@@ -76,6 +69,9 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         super.onResume()
         _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
         initActions()
+        lifecycleScope.launch {
+            _viewModel.loadFeeds()
+        }
     }
 
     override fun onStop() {
@@ -87,9 +83,8 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
     private fun initActions() {
         with (_binding.feedEmpty.addRssFeed.getFragment<AddRssFragment>()) {
             setBtnListener {
-                getViewModel().addRss()
-                _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
-                lifecycleScope.launch {
+                getViewModel().addRss().apply {
+                    _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
                     _viewModel.loadFeeds()
                 }
         } }
@@ -123,6 +118,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
             is FeedEvents.AddRssEvent -> findNavController().navigate(R.id.action_watchFeedsFragment_to_addRssFragment)
             is FeedEvents.ShowToastEvent -> Toast.makeText(requireContext(), event.msgId, Toast.LENGTH_SHORT).show()
             is FeedEvents.ShowFeedDetailsEvent -> showAboutFeedDialog(event.feed)
+            is FeedEvents.NewRssAdded -> _binding.feedViewPager.setCurrentItem(event.pos, false)
         }
     }
     private fun render(state: FeedState) {
@@ -149,14 +145,9 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         _binding.feedViewPager.isVisible = true
         _binding.tabLayout.isVisible = true
 
-        val oldCount = _adapter.itemCount
         _adapter.feedSummaries = state.feeds.toList()
 
-        if (oldCount < state.feeds.size)
-            _binding.feedViewPager.setCurrentItem(oldCount, false)
-
         _binding.feedViewPager.setCurrentItem(state.currentPage, false)
-
     }
 
     private fun renderEmptyState(state: FeedState) {
@@ -173,7 +164,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
             adapter = _adapter
 
             TabLayoutMediator(_binding.tabLayout, _binding.feedViewPager) { tab, pos ->
-                tab.text = _viewModel.state.value?.feeds?.get(pos)?.title
+                tab.text = _adapter.feedSummaries[pos].title
             }.attach()
         }
     }

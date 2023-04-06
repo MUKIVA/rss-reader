@@ -19,10 +19,9 @@ class WatchDetailsViewModel(
     private val _formatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
 
     fun setNews(id: Long) {
+        modifyState(getState().copy(stateType = WatchDetailsStateType.LOADING))
         viewModelScope.launch {
-            modifyState(getState().copy(stateType = WatchDetailsStateType.LOADING))
             val news = _rssStore.getItem(id)
-
             val content = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Html.fromHtml(news.description, Html.FROM_HTML_MODE_COMPACT)
             } else {

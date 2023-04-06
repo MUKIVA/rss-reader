@@ -49,12 +49,13 @@ class AddRssViewModel(
         viewModelScope.launch {
             _rssStorage.add(_currentRss!!)
             _currentRss = null
-            modifyState(getState().copy(
-                stateType = AddRssStateType.NORMAL,
-                rssItem = null,
-                errorMessage = null
-            ))
         }
+
+        modifyState(getState().copy(
+            stateType = AddRssStateType.NORMAL,
+            rssItem = null,
+            errorMessage = null
+        ))
     }
 
     private suspend fun search(link: String) {

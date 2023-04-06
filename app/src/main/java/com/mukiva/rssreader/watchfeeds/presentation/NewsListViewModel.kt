@@ -10,7 +10,7 @@ import com.mukiva.rssreader.utils.viewmodel.SingleStateViewModel
 import com.mukiva.rssreader.watchfeeds.domain.RssStorage
 import com.mukiva.rssreader.watchfeeds.domain.News
 import com.mukiva.rssreader.watchfeeds.domain.RefreshChannelUseCase
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class NewsListViewModel(
     val id: Long,
@@ -24,15 +24,17 @@ class NewsListViewModel(
     )
 ) {
 
-    suspend fun loadData() {
-        val state = getState()
-        val news = _rssStorage.getItems(state.id).map {
-            itemToNews(it)
+    fun loadData() {
+        viewModelScope.launch {
+            val state = getState()
+            val news = _rssStorage.getItems(state.id).map {
+                itemToNews(it)
+            }
+            modifyState(state.copy(
+                stateType = getStateType(news),
+                news = news
+            ))
         }
-        modifyState(state.copy(
-            stateType = getStateType(news),
-            news = news
-        ))
     }
 
     fun refresh() {

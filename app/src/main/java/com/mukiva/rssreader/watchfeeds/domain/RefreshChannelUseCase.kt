@@ -11,7 +11,6 @@ class RefreshChannelUseCase(
     private val _rssStorage: RssStorage,
     private val _rssSearchService: RssSearchGateway
 ) {
-
     suspend operator fun invoke(id: Long): Result<Channel> {
         return try {
             val channel = _rssStorage.getRss(id)

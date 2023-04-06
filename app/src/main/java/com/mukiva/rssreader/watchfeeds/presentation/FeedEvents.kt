@@ -7,4 +7,5 @@ sealed class FeedEvents {
     data class ShowToastEvent(val msgId: Int) : FeedEvents()
     object AddRssEvent : FeedEvents()
     data class ShowFeedDetailsEvent(val feed: FeedSummary) : FeedEvents()
+    data class NewRssAdded(val pos: Int) : FeedEvents()
 }
