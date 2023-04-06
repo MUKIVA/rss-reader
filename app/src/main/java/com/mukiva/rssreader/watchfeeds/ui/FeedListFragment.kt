@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -40,75 +39,69 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
     private lateinit var _adapter: NewsListFragmentAdapter
     private lateinit var _inputMethodManager: InputMethodManager
 
+
     private val _menuProvider = WatchFeedsMenuProvider(
         object : WatchFeedsMenuProviderActions {
 
             override fun deleteFeed() {
-                lifecycleScope.launch {
-                    _viewModel.triggerDeleteFeed(_binding.tabLayout.selectedTabPosition)
-                }
+                _viewModel.triggerDeleteFeed(_binding.tabLayout.selectedTabPosition)
             }
 
             override fun addFeed() {
-                lifecycleScope.launch {
-                    _viewModel.triggerAddFeed()
-                }
+                _viewModel.triggerAddFeed()
             }
 
             override fun aboutFeed() {
-                lifecycleScope.launch {
-                    _viewModel.triggerAboutFeedDialog(_binding.feedViewPager.currentItem)
-                }
+                _viewModel.triggerAboutFeedDialog(_binding.feedViewPager.currentItem)
             }
         }
     )
 
-    companion object {
-        const val ADAPTER_STATE = "ADAPTER_STATE"
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        observeViewModel()
-        initFields(view, savedInstanceState)
-        initPager()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         lifecycleScope.launch {
-            initActions()
             _viewModel.loadFeeds()
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelableArrayList(ADAPTER_STATE, ArrayList(_adapter.feedSummaries))
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initFields(view)
+        initPager()
+        observeViewModel()
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+        initActions()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        _viewModel.setScrollMap(_adapter.getScrollMap())
+        _viewModel.setPage(_binding.feedViewPager.currentItem)
     }
 
     private fun initActions() {
         with (_binding.feedEmpty.addRssFeed.getFragment<AddRssFragment>()) {
             setBtnListener {
+                getViewModel().addRss()
+                _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
                 lifecycleScope.launch {
-                    getViewModel().addRss()
-                    _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
                     _viewModel.loadFeeds()
                 }
         } }
     }
 
-    private fun initFields(view: View, state: Bundle?) {
+    private fun initFields(view: View) {
         _binding = FragmentWatchFeedsBinding.bind(view)
+        _adapter = NewsListFragmentAdapter(
+            childFragmentManager,
+            lifecycle
+        )
 
-        val data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            state?.getParcelableArrayList(ADAPTER_STATE, FeedSummary::class.java)
-        } else {
-            state?.getParcelableArrayList(ADAPTER_STATE)
-        }
-
-        _adapter = NewsListFragmentAdapter(this, data?.toList() ?: listOf())
         _inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     }
 
@@ -129,7 +122,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
             is FeedEvents.DeleteRssEvent -> showDeleteAlertDialog(event.feed)
             is FeedEvents.AddRssEvent -> findNavController().navigate(R.id.action_watchFeedsFragment_to_addRssFragment)
             is FeedEvents.ShowToastEvent -> Toast.makeText(requireContext(), event.msgId, Toast.LENGTH_SHORT).show()
-            is FeedEvents.ShowFeedDetails -> showAboutFeedDialog(event.feed)
+            is FeedEvents.ShowFeedDetailsEvent -> showAboutFeedDialog(event.feed)
         }
     }
     private fun render(state: FeedState) {
@@ -150,6 +143,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
 
     private fun renderNormalState(state: FeedState) {
         initMenu()
+        _adapter.setScrollMap(state.scrollMap)
         _binding.feedLoading.root.isVisible = false
         _binding.feedEmpty.root.isVisible = false
         _binding.feedViewPager.isVisible = true
@@ -157,8 +151,12 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
 
         val oldCount = _adapter.itemCount
         _adapter.feedSummaries = state.feeds.toList()
+
         if (oldCount < state.feeds.size)
             _binding.feedViewPager.setCurrentItem(oldCount, false)
+
+        _binding.feedViewPager.setCurrentItem(state.currentPage, false)
+
     }
 
     private fun renderEmptyState(state: FeedState) {
@@ -217,9 +215,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
 
     private fun handleDialogResponse(response: Int, item: FeedSummary) {
         when (response) {
-            DialogInterface.BUTTON_POSITIVE -> lifecycleScope.launch {
-                _viewModel.deleteFeed(item.id)
-            }
+            DialogInterface.BUTTON_POSITIVE -> _viewModel.deleteFeed(item.id)
         }
     }
 }

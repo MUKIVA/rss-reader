@@ -23,25 +23,25 @@ class NewsListViewModel(
     )
 ) {
 
-    fun loadData() {
-        viewModelScope.launch {
-            val state = getState()
-            val news = _rssStorage.getItems(state.id).map {
-                itemToNews(it)
-            }
-            modifyState(state.copy(
-                stateType = getStateType(news),
-                news = news
-            ))
+    suspend fun loadData() {
+        val state = getState()
+        val news = _rssStorage.getItems(state.id).map {
+            itemToNews(it)
         }
+        modifyState(state.copy(
+            stateType = getStateType(news),
+            news = news
+        ))
     }
 
-    suspend fun refresh() {
-        val id = getState().id
+    fun refresh() {
+        viewModelScope.launch {
+            val id = getState().id
 
-        when (val result = RefreshChannelUseCase(_rssStorage, _rssSearchService).invoke(id)) {
-            is Error -> handleErrorRefresh(result.error)
-            is Success<Channel> -> handleSuccessRefresh(result.data)
+            when (val result = RefreshChannelUseCase(_rssStorage, _rssSearchService).invoke(id)) {
+                is Error -> handleErrorRefresh(result.error)
+                is Success<Channel> -> handleSuccessRefresh(result.data)
+            }
         }
     }
 
@@ -65,7 +65,7 @@ class NewsListViewModel(
         event(NewsListEvents.RefreshSuccessEvent)
     }
 
-    private fun handleErrorRefresh(err: SearchError) {
+    private suspend fun handleErrorRefresh(err: SearchError) {
         when (err) {
             ConnectionError -> handleConnectionError()
             TimeoutError -> handleTimeoutError()
@@ -73,28 +73,26 @@ class NewsListViewModel(
         }
     }
 
-    private fun handleUnknownError() {
+    private suspend fun handleUnknownError() {
         setErrorState(NewsListEvents.RefreshErrorEvent(R.string.refresh_unknown_error))
     }
 
-    private fun handleTimeoutError() {
+    private suspend fun handleTimeoutError() {
         setErrorState(NewsListEvents.RefreshErrorEvent(R.string.search_time_out_error))
     }
 
-    private fun handleConnectionError() {
+    private suspend fun handleConnectionError() {
         setErrorState(NewsListEvents.RefreshErrorEvent(R.string.search_error_network))
     }
 
-    private fun setErrorState(nonEmptyEvt: NewsListEvents) {
-        viewModelScope.launch {
-            if (getState().news.isEmpty()) {
-                modifyState(getState().copy(
-                    stateType = NewsListStateType.FAIL
-                ))
-            }
-
-            event(nonEmptyEvt)
+    private suspend fun setErrorState(nonEmptyEvt: NewsListEvents) {
+        if (getState().news.isEmpty()) {
+            modifyState(getState().copy(
+                stateType = NewsListStateType.FAIL
+            ))
         }
+
+        event(nonEmptyEvt)
     }
 
     private fun getStateType(news: List<News>): NewsListStateType {

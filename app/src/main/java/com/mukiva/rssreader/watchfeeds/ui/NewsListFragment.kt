@@ -11,6 +11,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.databinding.FragmentNewsListBinding
 import com.mukiva.rssreader.watchdetails.ui.NewsDetailsFragment
@@ -26,15 +27,35 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @FlowPreview
-class NewsListFragment(
-    val id: Long
-) : Fragment(R.layout.fragment_news_list) {
+class NewsListFragment : Fragment(R.layout.fragment_news_list) {
+
+    private var _position: Int = 0
+    private var _id: Long = -1
 
     private lateinit var _binding: FragmentNewsListBinding
     private lateinit var _adapter: NewsListItemAdapter
-    private val _viewModel: NewsListViewModel by viewModels { factory(id) }
+    private val _viewModel: NewsListViewModel by viewModels { factory(_id) }
+    private var _positionListener: ((Int) -> Unit)? = null
 
-    constructor() : this(0)
+
+
+    companion object {
+        private const val ARG_ID = "ARG_ID"
+        private const val ARG_POSITION = "ARG_POS"
+
+        fun newInstance(id: Long, position: Int) = NewsListFragment().apply {
+            arguments = bundleOf(
+                ARG_ID to id,
+                ARG_POSITION to position
+            )
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        _id = requireArguments().getLong(ARG_ID)
+        _position = requireArguments().getInt(ARG_POSITION)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,6 +65,7 @@ class NewsListFragment(
         initActions()
         initRefreshLayouts()
         observeViewModel()
+
     }
 
     override fun onResume() {
@@ -53,10 +75,12 @@ class NewsListFragment(
         }
     }
 
+    fun setPositionChangeListener(listener: (Int) -> Unit) {
+        _positionListener = listener
+    }
+
     private fun refresh() {
-        lifecycleScope.launch {
-            _viewModel.refresh()
-        }
+        _viewModel.refresh()
     }
 
     private fun initActions() {
@@ -80,6 +104,18 @@ class NewsListFragment(
                     ))
             }
         })
+
+        _binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                lifecycleScope.launch {
+                    val maxOffset = recyclerView.computeVerticalScrollRange()
+                    val offset = recyclerView.computeVerticalScrollOffset()
+                    _position = offset / (maxOffset / _adapter.items.size)
+                    _positionListener?.invoke(_position)
+                }
+            }
+        })
     }
 
     private fun observeViewModel() {
@@ -97,7 +133,7 @@ class NewsListFragment(
     private fun handleEvents(evt: NewsListEvents) {
         when (evt) {
             is NewsListEvents.RefreshErrorEvent -> sendToast(evt.msgId)
-            is NewsListEvents.RefreshSuccessEvent -> _binding.recyclerView.scrollToPosition(0)
+            is NewsListEvents.RefreshSuccessEvent -> _binding.recyclerView.smoothScrollToPosition(0)
         }
     }
 
@@ -158,6 +194,7 @@ class NewsListFragment(
         _adapter.items = state.news
         _binding.refreshLayout.isRefreshing = false
         _binding.recyclerView.isVisible = true
+        _binding.recyclerView.scrollToPosition(_position)
     }
 
     private fun renderFailState() {

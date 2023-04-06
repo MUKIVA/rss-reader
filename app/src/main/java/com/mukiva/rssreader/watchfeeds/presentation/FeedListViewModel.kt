@@ -1,10 +1,12 @@
 package com.mukiva.rssreader.watchfeeds.presentation
 
+import androidx.lifecycle.viewModelScope
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.addrss.data.parsing.elements.Channel
 import com.mukiva.rssreader.core.viewmodel.SingleStateViewModel
 import com.mukiva.rssreader.watchfeeds.data.RssStorage
 import com.mukiva.rssreader.watchfeeds.domain.FeedSummary
+import kotlinx.coroutines.launch
 
 class FeedListViewModel(
     private val _rssStorage: RssStorage,
@@ -14,34 +16,53 @@ class FeedListViewModel(
         feeds = listOf()
     )
 ) {
-
     companion object {
         const val MAX_PAGE_COUNT = 10
     }
 
-    suspend fun triggerDeleteFeed(index: Int) {
-        val item = getState().feeds[index]
-        event(FeedEvents.DeleteRssEvent(item))
-    }
-
-    suspend fun triggerAddFeed() {
-        if (getState().feeds.size >= MAX_PAGE_COUNT)
-            event(FeedEvents.ShowToastEvent(R.string.max_feeds_count_msg))
-        else
-            event(FeedEvents.AddRssEvent)
-    }
-
-    suspend fun triggerAboutFeedDialog(index: Int) {
-        event(FeedEvents.ShowFeedDetails(getState().feeds[index]))
-    }
-
-    suspend fun deleteFeed(id: Long) {
-        modifyState(getState().copy(stateType = FeedStateType.LOADING))
-        val feeds = _rssStorage.delete(id).map { createFeedSummary(it) }
+    fun setPage(page: Int) {
         modifyState(getState().copy(
-            stateType = getFeedStateType(feeds),
-            feeds = feeds
+            currentPage = page
         ))
+    }
+
+    fun setScrollMap(map: Map<Long, Int>) {
+        modifyState(getState().copy(
+            scrollMap = map
+        ))
+    }
+
+    fun triggerDeleteFeed(index: Int) {
+        viewModelScope.launch {
+            val item = getState().feeds[index]
+            event(FeedEvents.DeleteRssEvent(item))
+        }
+    }
+
+    fun triggerAddFeed() {
+        viewModelScope.launch {
+            if (getState().feeds.size >= MAX_PAGE_COUNT)
+                event(FeedEvents.ShowToastEvent(R.string.max_feeds_count_msg))
+            else
+                event(FeedEvents.AddRssEvent)
+        }
+    }
+
+    fun triggerAboutFeedDialog(index: Int) {
+        viewModelScope.launch {
+            event(FeedEvents.ShowFeedDetailsEvent(getState().feeds[index]))
+        }
+    }
+
+    fun deleteFeed(id: Long) {
+        viewModelScope.launch {
+            modifyState(getState().copy(stateType = FeedStateType.LOADING))
+            val feeds = _rssStorage.delete(id).map { createFeedSummary(it) }
+            modifyState(getState().copy(
+                stateType = getFeedStateType(feeds),
+                feeds = feeds
+            ))
+        }
     }
 
     suspend fun loadFeeds() {

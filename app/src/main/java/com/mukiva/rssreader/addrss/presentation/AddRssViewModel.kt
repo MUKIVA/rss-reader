@@ -39,18 +39,22 @@ class AddRssViewModel(
             .launchIn(viewModelScope)
     }
 
-    suspend fun triggerSearch(text: String) {
-        _searchDebounce.emit(text)
+    fun triggerSearch(text: String) {
+        viewModelScope.launch {
+            _searchDebounce.emit(text)
+        }
     }
 
-    suspend fun addRss() {
-        _rssStorage.add(_currentRss!!)
-        _currentRss = null
-        modifyState(getState().copy(
-            stateType = AddRssStateType.NORMAL,
-            rssItem = null,
-            errorMessage = null
-        ))
+    fun addRss() {
+        viewModelScope.launch {
+            _rssStorage.add(_currentRss!!)
+            _currentRss = null
+            modifyState(getState().copy(
+                stateType = AddRssStateType.NORMAL,
+                rssItem = null,
+                errorMessage = null
+            ))
+        }
     }
 
     private suspend fun search(link: String) {
