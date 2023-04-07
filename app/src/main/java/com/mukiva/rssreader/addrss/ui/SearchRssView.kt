@@ -89,6 +89,14 @@ class SearchRssView
         _binding.searchRssField.text.clear()
     }
 
+    fun setButtonLock(lock: Boolean) {
+        _binding.addToFeedBtn.isEnabled = !lock
+    }
+
+    fun setFieldLock(lock: Boolean) {
+        _binding.searchRssField.isEnabled = !lock
+    }
+
     private fun setImage(link: String?) {
         Glide.with(this)
             .load(link)

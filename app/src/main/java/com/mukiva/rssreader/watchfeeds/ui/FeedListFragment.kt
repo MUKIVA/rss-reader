@@ -30,7 +30,6 @@ import com.mukiva.rssreader.watchfeeds.presentation.*
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
 class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
@@ -69,9 +68,7 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
         super.onResume()
         _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
         initActions()
-        lifecycleScope.launch {
-            _viewModel.loadFeeds()
-        }
+        _viewModel.loadFeeds()
     }
 
     override fun onStop() {
@@ -82,11 +79,9 @@ class FeedListFragment : Fragment(R.layout.fragment_watch_feeds) {
 
     private fun initActions() {
         with (_binding.feedEmpty.addRssFeed.getFragment<AddRssFragment>()) {
-            setBtnListener {
-                getViewModel().addRss().apply {
-                    _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
-                    _viewModel.loadFeeds()
-                }
+            setAddRssEndListener {
+                _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+                _viewModel.loadFeeds()
         } }
     }
 

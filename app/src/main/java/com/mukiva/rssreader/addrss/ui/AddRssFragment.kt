@@ -6,25 +6,32 @@ import android.annotation.SuppressLint
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.addrss.di.factory
+import com.mukiva.rssreader.addrss.presentation.AddRssEvent
 import com.mukiva.rssreader.addrss.presentation.AddRssState
 import com.mukiva.rssreader.addrss.presentation.AddRssStateType
 import com.mukiva.rssreader.databinding.FragmentAddRssBinding
 import com.mukiva.rssreader.addrss.presentation.AddRssViewModel
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
     private lateinit var _binding: FragmentAddRssBinding
     private lateinit var _inputMethodManager: InputMethodManager
     private val _viewModel: AddRssViewModel by viewModels { factory() }
+
+    private var _onAddRssEnd: () -> Unit = {
+        _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+        findNavController().navigateUp()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,10 +44,8 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
         initActions()
     }
 
-    fun getViewModel(): AddRssViewModel = _viewModel
-
-    fun setBtnListener(onClickListener: OnClickListener) {
-        _binding.searchField.setBtnListener(onClickListener)
+    fun setAddRssEndListener(listener: () -> Unit) {
+        _onAddRssEnd = listener
     }
 
     private fun initActions() {
@@ -50,11 +55,8 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
         }
 
         _binding.searchField.setBtnListener {
-            lifecycleScope.launch {
-                _viewModel.addRss()
-            }
-            _inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
-            findNavController().navigateUp()
+            _viewModel.addRss()
+
         }
     }
 
@@ -66,6 +68,21 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
 
     private fun observeViewModel() {
         _viewModel.state.observe(viewLifecycleOwner, ::render)
+
+        _viewModel.event
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+            .onEach { handleEvents(it) }
+            .launchIn(lifecycleScope)
+    }
+
+    private fun handleEvents(event: AddRssEvent) {
+        when (event) {
+            AddRssEvent.AddRssEnd -> handleEndAddEvent()
+        }
+    }
+
+    private fun handleEndAddEvent() {
+        _onAddRssEnd()
     }
 
     private fun render(state: AddRssState) {
@@ -76,7 +93,13 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
             AddRssStateType.SEARCH -> renderSearchState()
             AddRssStateType.SEARCH_FAIL -> renderSearchFailState()
             AddRssStateType.SEARCH_SUCCESS -> renderSearchSuccessState()
+            AddRssStateType.LOCK -> renderLockState()
         }
+    }
+
+    private fun renderLockState() {
+        _binding.searchField.setButtonLock(true)
+        _binding.searchField.setFieldLock(true)
     }
 
     private fun renderNormalState() {
@@ -99,6 +122,8 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
     }
 
     private fun renderSearchSuccessState() {
+        _binding.searchField.setButtonLock(false)
+        _binding.searchField.setFieldLock(false)
         _binding.searchField.inProgress = false
         _binding.searchField.errorMsgIsVisible = false
         _binding.searchField.previewAreaIsVisible = true

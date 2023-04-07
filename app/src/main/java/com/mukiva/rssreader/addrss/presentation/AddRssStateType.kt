@@ -4,5 +4,6 @@ enum class AddRssStateType {
     NORMAL,
     SEARCH,
     SEARCH_FAIL,
-    SEARCH_SUCCESS
+    SEARCH_SUCCESS,
+    LOCK
 }
