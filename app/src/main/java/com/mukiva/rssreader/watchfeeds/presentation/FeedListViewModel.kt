@@ -3,9 +3,13 @@ package com.mukiva.rssreader.watchfeeds.presentation
 import androidx.lifecycle.viewModelScope
 import com.mukiva.rssreader.R
 import com.mukiva.rssreader.addrss.data.parsing.elements.Channel
+import com.mukiva.rssreader.addrss.domain.Error
+import com.mukiva.rssreader.addrss.domain.Success
 import com.mukiva.rssreader.utils.viewmodel.SingleStateViewModel
+import com.mukiva.rssreader.watchfeeds.domain.DeleteRssUseCase
 import com.mukiva.rssreader.watchfeeds.domain.RssStorage
 import com.mukiva.rssreader.watchfeeds.domain.FeedSummary
+import com.mukiva.rssreader.watchfeeds.domain.GetAllRssUseCase
 import kotlinx.coroutines.launch
 
 class FeedListViewModel(
@@ -57,26 +61,41 @@ class FeedListViewModel(
     fun deleteFeed(id: Long) {
         viewModelScope.launch {
             modifyState(getState().copy(stateType = FeedStateType.LOADING))
-            val feeds = _rssStorage.delete(id).map { createFeedSummary(it) }
-            modifyState(getState().copy(
-                stateType = getFeedStateType(feeds),
-                feeds = feeds
-            ))
+            when (val result = DeleteRssUseCase(_rssStorage).invoke(id)) {
+                is Error -> event(FeedEvents.ShowToastEvent(R.string.unknown_error))
+                is Success -> {
+                    val summary = result.data.map { createFeedSummary(it) }
+                    modifyState(getState().copy(
+                        stateType = getFeedStateType(summary),
+                        feeds = summary
+                    ))
+                }
+            }
         }
     }
 
     fun loadFeeds() {
         modifyState(getState().copy(stateType = FeedStateType.LOADING))
         viewModelScope.launch {
-            val feeds = _rssStorage.getAllRss().map { createFeedSummary(it) }
-            val oldSize = getState().feeds.size
-            modifyState(getState().copy(
-                stateType = getFeedStateType(feeds),
-                feeds = feeds
-            ))
 
-            if (feeds.size > oldSize)
-                event(FeedEvents.NewRssAdded(oldSize))
+            when (val result = GetAllRssUseCase(_rssStorage).invoke()) {
+                is Error -> {
+                    event(FeedEvents.ShowToastEvent(R.string.unknown_error))
+                    modifyState(getState().copy(
+                        stateType = FeedStateType.EMPTY
+                    ))
+                }
+                is Success -> {
+                    val feeds = result.data.map { createFeedSummary(it) }
+                    val oldSize = getState().feeds.size
+                    modifyState(getState().copy(
+                        stateType = getFeedStateType(feeds),
+                        feeds = feeds
+                    ))
+                    if (feeds.size > oldSize)
+                        event(FeedEvents.NewRssAdded(oldSize))
+                }
+            }
         }
     }
 

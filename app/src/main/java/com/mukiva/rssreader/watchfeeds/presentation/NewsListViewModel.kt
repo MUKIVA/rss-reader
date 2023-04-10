@@ -7,6 +7,7 @@ import com.mukiva.rssreader.addrss.data.parsing.elements.Channel
 import com.mukiva.rssreader.addrss.data.parsing.elements.Item
 import com.mukiva.rssreader.addrss.domain.*
 import com.mukiva.rssreader.utils.viewmodel.SingleStateViewModel
+import com.mukiva.rssreader.watchfeeds.domain.GetItemsUseCase
 import com.mukiva.rssreader.watchfeeds.domain.RssStorage
 import com.mukiva.rssreader.watchfeeds.domain.News
 import com.mukiva.rssreader.watchfeeds.domain.RefreshChannelUseCase
@@ -27,13 +28,18 @@ class NewsListViewModel(
     fun loadData() {
         viewModelScope.launch {
             val state = getState()
-            val news = _rssStorage.getItems(state.id).map {
-                itemToNews(it)
+            when (val result = GetItemsUseCase(_rssStorage).invoke(state.id)) {
+                is Error -> modifyState(state.copy(
+                    stateType = NewsListStateType.FAIL
+                ))
+                is Success -> {
+                    val news = result.data.map { itemToNews(it) }
+                    modifyState(state.copy(
+                        stateType = getStateType(news),
+                        news = news
+                    ))
+                }
             }
-            modifyState(state.copy(
-                stateType = getStateType(news),
-                news = news
-            ))
         }
     }
 
@@ -77,7 +83,7 @@ class NewsListViewModel(
     }
 
     private suspend fun handleUnknownError() {
-        setErrorState(NewsListEvents.RefreshErrorEvent(R.string.refresh_unknown_error))
+        setErrorState(NewsListEvents.RefreshErrorEvent(R.string.unknown_error))
     }
 
     private suspend fun handleTimeoutError() {

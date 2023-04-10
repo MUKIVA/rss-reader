@@ -48,15 +48,19 @@ class AddRssViewModel(
     fun addRss() {
         viewModelScope.launch {
             modifyState(getState().copy(stateType = AddRssStateType.LOCK))
-            delay(500)
-            _rssStorage.add(_currentRss!!)
-            _currentRss = null
-            modifyState(getState().copy(
-                stateType = AddRssStateType.NORMAL,
-                rssItem = null,
-                errorMessage = null
-            ))
-            event(AddRssEvent.AddRssEnd)
+            when (AddRssUseCase(_rssStorage).invoke(_currentRss!!)) {
+                is Error -> event(AddRssEvent.SendToast(R.string.unknown_error))
+                is Success -> {
+                    _currentRss = null
+                    event(AddRssEvent.AddRssEnd)
+                    modifyState(getState().copy(
+                        stateType = AddRssStateType.NORMAL,
+                        rssItem = null,
+                        errorMessage = null
+                    ))
+                }
+            }
+
         }
     }
 

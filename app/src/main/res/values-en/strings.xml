@@ -21,7 +21,7 @@
     <string name="delete_alert_dialog_message">Do you really want to delete %1$s?</string>
     <string name="search_time_out_error">Exceeded waiting time</string>
     <string name="search_already_added_error">Rss feed already added</string>
-    <string name="refresh_unknown_error">Unknown error</string>
+    <string name="unknown_error">Unknown error</string>
     <string name="share_ic_text">Share</string>
     <string name="header_new_rss">New rss-feed</string>
 </resources>

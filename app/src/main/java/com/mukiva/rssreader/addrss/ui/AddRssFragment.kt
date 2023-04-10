@@ -7,6 +7,7 @@ import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
@@ -78,7 +79,12 @@ class AddRssFragment : Fragment(R.layout.fragment_add_rss) {
     private fun handleEvents(event: AddRssEvent) {
         when (event) {
             AddRssEvent.AddRssEnd -> handleEndAddEvent()
+            is AddRssEvent.SendToast -> sendToast(event.id)
         }
+    }
+
+    private fun sendToast(msg: Int) {
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
     }
 
     private fun handleEndAddEvent() {

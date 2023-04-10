@@ -35,7 +35,7 @@
     <string name="delete_alert_dialog_message">Вы действительно хотите удалить %1$s?</string>
     <string name="search_time_out_error">Превышено время ожидания</string>
     <string name="search_already_added_error">Rss лента уже добавлена</string>
-    <string name="refresh_unknown_error">Неизвестная ошибка</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
     <string name="share_ic_text">Поделиться</string>
     <string name="header_new_rss">Новая лента</string>
 
