@@ -14,19 +14,12 @@
         <!-- Customize your theme here. -->
         <item name="materialButtonStyle">@style/Widget.RSSReader.Button</item>
         <item name="bottomSheetDialogTheme">@style/Theme.RSSReader.BottomSheetDialog</item>
-    </style>
-
-    <style name="Base.Theme.RSSReader" parent="Base.V21.Theme.RSSReader" />
-
-    <style name="Theme.RSSReader" parent="Base.Theme.RSSReader" />
-
-    <style name="Theme.RSSReader.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
-    <style name="Theme.RSSReader.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Base.Theme.RSSReader" parent="Base.V21.Theme.RSSReader" />
 
-    <style name="Theme.RSSReader.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.RSSReader" parent="Base.Theme.RSSReader" />
 </resources>
