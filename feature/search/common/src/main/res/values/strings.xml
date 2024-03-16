@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add">Добавить</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="connection_fail">Ошибка интернет соединения</string>
+    <string name="invalid_url_format">Неверный формат URL</string>
+    <string name="url_aready_exists">Лента уже добавлена</string>
+    <string name="time_out">Время на получение ленты истекло</string>
+</resources>

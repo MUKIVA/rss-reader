@@ -1,31 +1,51 @@
 package com.mukiva.rssreader
 
 import android.app.Application
-import com.mukiva.rssreader.addrss.data.HttpRssSearchGateway
-import com.mukiva.rssreader.addrss.data.RssSearchGateway
-import com.mukiva.rssreader.watchfeeds.data.ORMRssStorage
-import com.mukiva.rssreader.watchfeeds.domain.RssStorage
-import io.objectbox.BoxStore
-import okhttp3.OkHttpClient
+import androidx.work.Configuration
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.mukiva.data.services.DataWorkFactory
+import com.mukiva.data.services.UpdateAllRssWorker
+import dagger.hilt.android.HiltAndroidApp
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
+@HiltAndroidApp
 class App : Application() {
-    lateinit var rssStorage: RssStorage
-    lateinit var searchGateway: RssSearchGateway
 
-    private lateinit var _store: BoxStore
+    @Inject
+    lateinit var workerFactory: DataWorkFactory
 
-    private val _client: OkHttpClient = OkHttpClient.Builder()
-        .cache(null)
-        .build()
+    private val mUpdateRssWorkRequest =
+        PeriodicWorkRequestBuilder<UpdateAllRssWorker>(
+            repeatInterval = UPDATE_RSS_PERIOD,
+            repeatIntervalTimeUnit = TimeUnit.MILLISECONDS
+        ).build()
 
     override fun onCreate() {
         super.onCreate()
+        WorkManager.initialize(
+            applicationContext,
+            Configuration.Builder()
+                .setExecutor(Executors.newFixedThreadPool(THREAD_POOL))
+                .setWorkerFactory(workerFactory)
+                .build()
+        )
 
-//        _store = MyObjectBox.builder()
-//            .androidContext(this)
-//            .build()
+        WorkManager
+            .getInstance(applicationContext)
+            .enqueueUniquePeriodicWork(
+                UpdateAllRssWorker.TAG,
+                ExistingPeriodicWorkPolicy.KEEP,
+                mUpdateRssWorkRequest
+            )
+    }
 
-        rssStorage = ORMRssStorage(_store)
-        searchGateway = HttpRssSearchGateway(_client)
+    companion object {
+        private const val UPDATE_RSS_PERIOD = 30L * 60L * 1000L
+        private const val THREAD_POOL = 8
     }
 }
+

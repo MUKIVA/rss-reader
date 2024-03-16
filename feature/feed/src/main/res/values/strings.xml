@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">RSS Reader</string>
+
+    <string name="fail_get_data_text">При получении данных возникла ошибка</string>
+    <string name="add_first_rss_text">У вас еще нет RSS лент\nВставьте ссылку, чтобы добавить</string>
+    <string name="feed_is_empty">Лента не содержит новостей</string>
+
+    <string name="details_open_original">Открыть оригинал</string>
+    <string name="menu_about_feed">Информация о ленте</string>
+    <string name="menu_add_feed">Добавить ленту</string>
+    <string name="menu_delete_feed">Удалить ленту</string>
+    <string name="alert_delete_rss">Вы действительно хотите удалить </string>
+    <string name="smth_went_wrong">Произошла ошибка!</string>
+</resources>

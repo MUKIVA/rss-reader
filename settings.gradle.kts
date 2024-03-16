@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
         google()
@@ -16,3 +18,15 @@ dependencyResolutionManagement {
 
 rootProject.name = "RSS Reader"
 include(":app")
+include(":navigation")
+include(":data")
+
+include(":core:ui")
+include(":core:utils")
+
+include(":feature:feed")
+include(":feature:search:common")
+include(":feature:search:impl")
+include(":feature:article_viewer")
+
+

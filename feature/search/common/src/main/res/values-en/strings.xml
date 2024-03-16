@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add">Add</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="connection_fail">Internet connection fail</string>
+    <string name="invalid_url_format">Invalid URL format</string>
+    <string name="url_aready_exists">URL already exists</string>
+    <string name="time_out">Time to receive RSS has expired</string>
+</resources>

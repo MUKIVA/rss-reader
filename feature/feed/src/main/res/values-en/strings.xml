@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="fail_get_data_text">An error occurred when receiving the data</string>
+    <string name="add_first_rss_text">You don\'t have RSS feeds yet\nPaste link to add</string>
+    <string name="feed_is_empty">The feed does not contain news</string>
+
+    <string name="details_open_original">Open original</string>
+    <string name="menu_about_feed">about feed</string>
+    <string name="menu_add_feed">add feed</string>
+    <string name="menu_delete_feed">delete the rss feed</string>
+    <string name="alert_delete_rss">Do you really want to delete </string>
+
+    <string name="smth_went_wrong">Something went wrong!</string>
+</resources>
